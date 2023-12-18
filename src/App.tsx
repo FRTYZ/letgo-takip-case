@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './App.css'
 
 import { 
@@ -54,6 +54,8 @@ function App() {
   };
 
   const [open, setOpen] = useState(false);
+  const [getCoins, setGetCoins] = useState([]);
+  const [searchCoins, setSearchCoins] = useState([]);
 
   const handleModal = () => {
     setOpen(!open)
@@ -63,13 +65,41 @@ function App() {
       initialValues: {
           search: '',
           sembolName: '',
-          sembolCount: '',
+          sembolCount: 1,
       },
       onSubmit: async (values) => {
-
+          const {sembolName, sembolCount} = values;
+         
       }
   })
 
+  useEffect(() => {
+      const getCoins = async() => {
+          const url = 'https://api2.binance.com/api/v3/ticker/24hr';
+          const response = await fetch(url);
+          const results = await response.json();
+          setGetCoins(results);
+      }
+      getCoins();
+  },[])
+
+
+  useEffect(() => {
+    if(formik.values.search){
+      const searchCoin = async() => {
+
+          const currentSearch = formik.values.search;
+          const filteredCoins = getCoins.filter((coin) =>
+              coin.symbol.toLowerCase().includes(currentSearch.toLowerCase())
+          );
+
+          setSearchCoins(filteredCoins);
+
+      }
+      searchCoin();
+    }
+  }, [formik.values.search]);
+ 
   return (
     <Container>
       <Grid container spacing={3}>
@@ -161,41 +191,54 @@ function App() {
                           />
                     </Grid>
                   </Grid>
-                  <Grid container spacing={3}>
-                    <Grid item lg={6} md={6} sm={6} xs={6}>
-                          <TextField
-                              fullWidth
-                              size='small'
-                              id="sembolName"
-                              name="sembolName"
-                              value={formik.values.sembolName}
-                              onChange={formik.handleChange}
-                          />
-                    </Grid>
-                    <Grid item lg={3} md={3} sm={3} xs={3}>
-                            <TextField
-                              fullWidth
-                              type='number'
-                              size='small'
-                              id="sembolName"
-                              name="sembolName"
-                              value={formik.values.sembolName}
-                              onChange={formik.handleChange}
-                          />
-                    </Grid>
-                    <Grid item lg={3} md={3} sm={3} xs={3} sx={{ display: 'grid' }}>
-                        <Button 
-                            variant="text" 
-                            type='submit'
-                            sx={{
-                              backgroundColor: '#1C49D0',
-                              color: '#ffffff',
-                            }}
-                            size="large"
-                          >Add
-                        </Button>
-                    </Grid>
-                  </Grid>
+                  {searchCoins.length > 0 && searchCoins.map((item, key) => (
+                      <Grid container spacing={3} key={key} sx={{ marginBottom: '20px' }}>
+                        <Grid item lg={6} md={6} sm={6} xs={6}>
+                              <TextField
+                                  fullWidth
+                                  size='small'
+                                  id="sembolName"
+                                  name="sembolName"
+                                  InputProps={{
+                                    readOnly: true,
+                                  }}
+                                  value={`${item.symbol} - ${item.lastPrice}`}
+                                  onChange={formik.handleChange}
+                              />
+                              <input 
+                                hidden 
+                                name="weight" 
+                                value={item.weightedAvgPrice} 
+                                onChange={formik.handleChange}
+                              />
+                             
+                        </Grid>
+                        <Grid item lg={3} md={3} sm={3} xs={3}>
+                                <TextField
+                                  fullWidth
+                                  type='number'
+                                  size='small'
+                                  id="sembolCount"
+                                  name="sembolCount"
+                                  defaultValue={1}
+                                  value={formik.values.sembolCount}
+                                  onChange={formik.handleChange}
+                              />
+                        </Grid>
+                        <Grid item lg={3} md={3} sm={3} xs={3} sx={{ display: 'grid' }}>
+                            <Button 
+                                variant="contained" 
+                                type='submit'
+                                sx={{
+                                  backgroundColor: '#1C49D0',
+                                  color: '#ffffff',
+                                }}
+                                size="large"
+                              >Add
+                            </Button>
+                        </Grid>
+                      </Grid>
+                  ))}
                </form>
             </Box>
           </Modal>
