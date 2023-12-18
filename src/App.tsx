@@ -6,11 +6,14 @@ import {
     Grid, 
     Button, 
     Box,
-    Modal
+    Modal,
+    TextField
   } 
   from '@mui/material';
 
-import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
+import { PieChart, Pie, Cell, Tooltip } from "recharts";
+
+import { useFormik } from 'formik';
 
 function App() {
 
@@ -55,6 +58,17 @@ function App() {
   const handleModal = () => {
     setOpen(!open)
   }
+
+  const formik = useFormik({
+      initialValues: {
+          search: '',
+          sembolName: '',
+          sembolCount: '',
+      },
+      onSubmit: async (values) => {
+
+      }
+  })
 
   return (
     <Container>
@@ -113,6 +127,78 @@ function App() {
                 <Tooltip />
             </PieChart>
           </Grid>
+          <Modal
+              open={open}
+              onClose={handleModal}
+              aria-labelledby="modal-modal-title"
+              aria-describedby="modal-modal-description"
+            >
+              <Box sx={{
+                  position: 'absolute',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  width: { xl: '800px', lg: '800px', md: '95%', sm: '95%', xs: '95%'  },
+                  bgcolor: 'background.paper',
+                  border: '2px solid #000',
+                  boxShadow: 24,
+                  p: 4,
+              }}>
+                <form
+                    method='POST'
+                    onSubmit={formik.handleSubmit}
+                >
+                  <Grid container spacing={3}>
+                    <Grid item lg={12} md={12} sm={12} xs={12} sx={{ marginBottom: '40px' }}>
+                          <TextField
+                              fullWidth
+                              size='small'
+                              id="search"
+                              name="search"
+                              placeholder='Search'
+                              value={formik.values.search}
+                              onChange={formik.handleChange}
+                          />
+                    </Grid>
+                  </Grid>
+                  <Grid container spacing={3}>
+                    <Grid item lg={6} md={6} sm={6} xs={6}>
+                          <TextField
+                              fullWidth
+                              size='small'
+                              id="sembolName"
+                              name="sembolName"
+                              value={formik.values.sembolName}
+                              onChange={formik.handleChange}
+                          />
+                    </Grid>
+                    <Grid item lg={3} md={3} sm={3} xs={3}>
+                            <TextField
+                              fullWidth
+                              type='number'
+                              size='small'
+                              id="sembolName"
+                              name="sembolName"
+                              value={formik.values.sembolName}
+                              onChange={formik.handleChange}
+                          />
+                    </Grid>
+                    <Grid item lg={3} md={3} sm={3} xs={3} sx={{ display: 'grid' }}>
+                        <Button 
+                            variant="text" 
+                            type='submit'
+                            sx={{
+                              backgroundColor: '#1C49D0',
+                              color: '#ffffff',
+                            }}
+                            size="large"
+                          >Add
+                        </Button>
+                    </Grid>
+                  </Grid>
+               </form>
+            </Box>
+          </Modal>
       </Grid>
     </Container>
   )
