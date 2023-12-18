@@ -1,9 +1,16 @@
 import { useState } from 'react'
 import './App.css'
 
-import { Container, Grid, Button, Box } from '@mui/material';
+import { 
+    Container, 
+    Grid, 
+    Button, 
+    Box,
+    Modal
+  } 
+  from '@mui/material';
 
-import { PieChart, Pie, Cell, Tooltip } from "recharts";
+import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from "recharts";
 
 function App() {
 
@@ -43,6 +50,12 @@ function App() {
     );
   };
 
+  const [open, setOpen] = useState(false);
+
+  const handleModal = () => {
+    setOpen(!open)
+  }
+
   return (
     <Container>
       <Grid container spacing={3}>
@@ -55,6 +68,7 @@ function App() {
             >
                 <Button 
                     variant="contained"
+                    onClick={handleModal}
                     sx={{
                         marginRight:'15px',
                         fontWeight: 300,
@@ -79,26 +93,24 @@ function App() {
                 </Button>
             </Box>
           </Grid>
-      </Grid>
-      <Grid container>
-          <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-          <PieChart width={600} height={900} style={{ float: 'inline-end' }}>
-              <Pie
-                data={data}
-                cx={200}
-                cy={200}
-                labelLine={false}
-                label={renderCustomizedLabel}
-                outerRadius={200}
-                fill="#8884d8"
-                dataKey="value"
-              >
-                {data.map((entry, index) => (
-                  <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                ))}
-              </Pie>
-              <Tooltip />
-          </PieChart>
+          <Grid item xl={12} lg={12} md={12} sm={12}>
+            <PieChart width={600} height={900} className='letgo-charts-div'>
+                <Pie
+                  data={data}
+                  cx={200}
+                  cy={200}
+                  labelLine={false}
+                  label={renderCustomizedLabel}
+                  outerRadius={200}
+                  fill="#8884d8"
+                  dataKey="value"
+                >
+                  {data.map((entry, index) => (
+                    <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                  ))}
+                </Pie>
+                <Tooltip />
+            </PieChart>
           </Grid>
       </Grid>
     </Container>

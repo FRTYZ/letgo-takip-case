@@ -1,0 +1,21 @@
+.letgo-charts-div {
+    float: inline-end;
+    width: 600px;
+    height: 900px;
+}
+
+@media only screen and (max-width:991px) { 
+    .letgo-charts-div {
+        display: grid;
+        width: auto !important;
+        height: auto !important;
+    }
+}
+
+@media only screen and (max-width:576px) { 
+    .letgo-charts-div {
+        display: flex;
+        width: 85% !important;
+        height: 80% !important;
+    }
+}
