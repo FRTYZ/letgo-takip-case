@@ -14,8 +14,13 @@ import {
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
 import { useFormik } from 'formik';
+import { setCoinData } from './redux/store';
+import { useSelector, useDispatch } from "react-redux";
 
 function App() {
+  const dispatch = useDispatch();
+
+  const {coinData} = useSelector((state) => state.coinStorage);
 
   const data = [
     { name: "Group A", value: 400 },
@@ -69,7 +74,12 @@ function App() {
       },
       onSubmit: async (values) => {
           const {sembolName, sembolCount} = values;
-         
+
+          const selectedCoin = sembolName;
+          const filteredCoin = searchCoins.filter((coin) =>
+              coin.symbol.toLowerCase().includes(selectedCoin.toLowerCase())
+          );
+          dispatch(setCoinData(filteredCoin))
       }
   })
 
@@ -87,7 +97,6 @@ function App() {
   useEffect(() => {
     if(formik.values.search){
       const searchCoin = async() => {
-
           const currentSearch = formik.values.search;
           const filteredCoins = getCoins.filter((coin) =>
               coin.symbol.toLowerCase().includes(currentSearch.toLowerCase())
@@ -202,16 +211,9 @@ function App() {
                                   InputProps={{
                                     readOnly: true,
                                   }}
-                                  value={`${item.symbol} - ${item.lastPrice}`}
+                                  value={item.symbol}
                                   onChange={formik.handleChange}
                               />
-                              <input 
-                                hidden 
-                                name="weight" 
-                                value={item.weightedAvgPrice} 
-                                onChange={formik.handleChange}
-                              />
-                             
                         </Grid>
                         <Grid item lg={3} md={3} sm={3} xs={3}>
                                 <TextField
