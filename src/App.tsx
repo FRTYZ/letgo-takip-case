@@ -63,7 +63,8 @@ function App() {
             <Box 
                 sx={{ 
                   marginTop: '50px',
-                  marginBottom: '150px'
+                  marginBottom: '150px',
+                  textAlign: { lg: 'left' ,md: 'left' ,sm: 'center', xs: 'center' }
                 }}
             >
                 <Button 
