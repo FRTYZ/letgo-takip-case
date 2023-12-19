@@ -24,7 +24,12 @@ function App() {
 
     const {coinData} = useSelector((state) => state.coinStorage);
 
-    const [chartData, setChartData] = useState({});
+    const [chartData, setChartData] = useState(
+          [{
+            name: 'default',
+            value:1
+          }]
+        );
 
     useEffect(() => {
         if(coinData.length > 0){
@@ -37,7 +42,7 @@ function App() {
         }
     },[coinData])
     
-    const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+    const COLORS = ["#b8c0c7", "#00C49F", "#FFBB28", "#FF8042"];
     
     const RADIAN = Math.PI / 180;
     const renderCustomizedLabel = ({
