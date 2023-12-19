@@ -24,30 +24,32 @@ function App() {
 
     const {coinData} = useSelector((state) => state.coinStorage);
 
-    const [chartData, setChartData] = useState(
+    const [chartData, 
+          setChartData] 
+        = useState(
           [{
             name: 'default',
             value:1
           }]
         );
     
-    const [open, setOpen] = useState(false);
-    const [getCoins, setGetCoins] = useState([]);
+    const [open, setOpen] = useState<boolean>(false);
+    const [getCoins, setGetCoins] = useState<string[] | object>([]);
 
     const [inputValue, setInputValue] = useState<string>('');
-    const [searchCoins, setSearchCoins] = useState([]);
-    const [currentCoin, setCurrentCoin] = useState([]);
+    const [searchCoins, setSearchCoins] = useState<string[] | object>([]);
+    const [currentCoin, setCurrentCoin] = useState<string[] | object>([]);
 
-    const [counts, setCounts] = useState({});
+    const [counts, setCounts] = useState<string[] | object>({});
 
     const handleModal = () => setOpen(!open);
     const handleCloseModal = () => {
-      setOpen(false);
-      location.reload()
+        setOpen(false);
+        location.reload()
     }
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-      setInputValue(event.target.value);
+        setInputValue(event.target.value);
     };
 
     useEffect(() => {
@@ -145,12 +147,16 @@ function App() {
 
         const value: number = counts[symbol]
 
-        const updateData = {
-          symbol: symbol,
-          data: {
-            count: Number(value),
-          }
-        };    
+        const updateData: {
+            symbol: string,
+            data: object
+        } = {
+            symbol: symbol,
+            data: {
+              count: Number(value),
+            }
+        };
+        
         dispatch(updateCoinData(updateData));
     }
 
@@ -159,18 +165,21 @@ function App() {
       const response = await fetch(url);
       const results = await response.json();
 
-      coinData.length > 0 && coinData.map(( item, key ) => {
-          const filteredCurrentCoin = results.find((coin) =>
+      coinData.length > 0 && coinData.map(( item: string ) => {
+          const filteredCurrentCoin = results.find((coin: string) =>
               coin.symbol.includes(item.symbol)
           );
-          const newData = {
-            "symbol": item.symbol,
-            data: {
-              "weightedAvgPrice": filteredCurrentCoin.weightedAvgPrice,
-              "lastPrice": filteredCurrentCoin.lastPrice
-            }           
-          }
 
+          const newData: {
+              symbol: string,
+              data: object
+          } = {
+              "symbol": item.symbol,
+              data: {
+                "weightedAvgPrice": filteredCurrentCoin.weightedAvgPrice,
+                "lastPrice": filteredCurrentCoin.lastPrice
+              }           
+          }
           dispatch(updateCoinData(newData));
       })
       location.reload();
