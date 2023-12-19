@@ -378,7 +378,7 @@ function App() {
                                       
                                   }}>
                                 <Grid container spacing={1}>
-                                    <Grid xl={6} lg={6} md={6} sm={12} xs={12}>
+                                    <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
                                         <Typography variant="h6" component="div">
                                               {item.symbol}
                                         </Typography>
@@ -386,9 +386,9 @@ function App() {
                                               {item.lastPrice}  - {item.weightedAvgPrice}
                                         </Typography>
                                     </Grid>
-                                    <Grid xl={6} lg={6} md={6} sm={12} xs={12}>
+                                    <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
                                         <Grid container>
-                                            <Grid xl={4} lg={4} md={4} sm={2} xs={2}>
+                                            <Grid item xl={4} lg={4} md={4} sm={2} xs={2}>
                                                 <Box sx={{ marginTop: '15px' }}>
                                                   <input
                                                         type="number"
@@ -399,7 +399,7 @@ function App() {
                                                   />
                                                 </Box>
                                             </Grid>
-                                            <Grid xl={8} lg={8} md={8} sm={10} xs={10}>
+                                            <Grid item xl={8} lg={8} md={8} sm={10} xs={10}>
                                               <Box sx={{ float: 'right', marginTop:'20px' }}>
                                                   <Button 
                                                           variant="contained" 
@@ -463,7 +463,7 @@ function App() {
                                 
                             }}>
                           <Grid container spacing={1}>
-                              <Grid xl={6} lg={6} md={6} sm={12} xs={12}>
+                              <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
                                   <Typography variant="h6" component="div">
                                         {item.symbol}
                                   </Typography>
@@ -471,9 +471,9 @@ function App() {
                                         {item.lastPrice}  - {item.weightedAvgPrice}
                                   </Typography>
                               </Grid>
-                              <Grid xl={6} lg={6} md={6} sm={12} xs={12}>
+                              <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
                                   <Grid container>
-                                      <Grid xl={4} lg={4} md={4} sm={2} xs={2}>
+                                      <Grid item xl={4} lg={4} md={4} sm={2} xs={2}>
                                           <Box sx={{ marginTop: '15px' }}>
                                             <input
                                                   type="number"
@@ -484,7 +484,7 @@ function App() {
                                             />
                                           </Box>
                                       </Grid>
-                                      <Grid xl={8} lg={8} md={8} sm={10} xs={10}>
+                                      <Grid item xl={8} lg={8} md={8} sm={10} xs={10}>
                                         <Box sx={{ float: 'right', marginTop:'20px' }}>
                                             <Button 
                                                     variant="contained" 
