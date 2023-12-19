@@ -20,10 +20,14 @@ const coinSlice = createSlice({
         state.coinData.push(action.payload);
       }
     },
+    removeCoinBySymbol: (state, action) => {
+        // Belirtilen sembol ismine sahip objeyi filtreleyerek yeni bir dizi oluştur
+        state.coinData = state.coinData.filter((item) => item.symbol !== action.payload);
+    },
   },
 });
 
-export const { setCoinData } = coinSlice.actions;
+export const { setCoinData, removeCoinBySymbol } = coinSlice.actions;
 
 // rootReducer oluşturulması ve tüm reducer'ların birleştirilmesi
 const rootReducer = {

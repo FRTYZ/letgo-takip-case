@@ -16,7 +16,7 @@ import {
 
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-import { setCoinData } from './redux/store';
+import { setCoinData, removeCoinBySymbol } from './redux/store';
 import { useSelector, useDispatch } from "react-redux";
 
 function App() {
@@ -139,9 +139,12 @@ function App() {
           filteredCoin['count'] = Number(count);
           dispatch(setCoinData(filteredCoin)) 
         }
-
-        console.log(count);
     };
+
+    const handleRemoveCoin = (symbolName: string) => {
+        const symbol = symbolName;
+        dispatch(removeCoinBySymbol(symbol)) 
+    }
  
     return (
       <Container>
@@ -337,7 +340,7 @@ function App() {
                                                       '&:hover': {backgroundColor: '#C12126'}
                                                     }}
                                                     size="small"
-                                                    onClick={() => handleAddCoin(item.symbol)}
+                                                    onClick={() => handleRemoveCoin(item.symbol)}
                                                 >
                                                 Remove
                                             </Button>
