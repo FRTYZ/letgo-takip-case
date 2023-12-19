@@ -30,47 +30,7 @@ function App() {
             value:1
           }]
         );
-
-    useEffect(() => {
-        if(coinData.length > 0){
-          const newData = coinData.map(item => ({
-            name: item.symbol,
-            value: Number(item.count)
-          }));
-
-          setChartData(newData);
-        }
-    },[coinData])
     
-    const COLORS = ["#b8c0c7", "#00C49F", "#FFBB28", "#FF8042"];
-    
-    const RADIAN = Math.PI / 180;
-    const renderCustomizedLabel = ({
-      cx,
-      cy,
-      midAngle,
-      innerRadius,
-      outerRadius,
-      percent,
-      index
-    }: any) => {
-      const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-      const x = cx + radius * Math.cos(-midAngle * RADIAN);
-      const y = cy + radius * Math.sin(-midAngle * RADIAN);
-    
-      return (
-        <text
-          x={x}
-          y={y}
-          fill="white"
-          textAnchor={x > cx ? "start" : "end"}
-          dominantBaseline="central"
-        >
-          {`${(percent * 100).toFixed(0)}%`}
-        </text>
-      );
-    };
-
     const [open, setOpen] = useState(false);
     const [getCoins, setGetCoins] = useState([]);
 
@@ -80,14 +40,29 @@ function App() {
 
     const [counts, setCounts] = useState({});
 
-    const handleModal = () => {
-      setOpen(!open)
+    const handleModal = () => setOpen(!open);
+    const handleCloseModal = () => {
+      setOpen(false);
+      location.reload()
     }
 
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
       setInputValue(event.target.value);
     };
 
+    useEffect(() => {
+      if(coinData.length > 0){
+        const newData = coinData.map(item => ({
+          name: item.symbol,
+          value: Number(item.count)
+        }));
+
+        setChartData(newData);
+      }
+    },[coinData])
+
+
+    
     useEffect(() => {
         const getCoins = async() => {
             const url = 'https://api2.binance.com/api/v3/ticker/24hr';
@@ -108,7 +83,6 @@ function App() {
         getCoins();
     },[])
 
-
     useEffect(() => {
       if(inputValue){
         const searchCoin = async() => {
@@ -121,14 +95,15 @@ function App() {
             if(coinData?.length > 0) {
               const filteredCurrentCoin = coinData.filter((coin) =>
                 coin.symbol.toLowerCase().includes(inputValue.toLowerCase())
-              );
+            );
           
               setCurrentCoin(filteredCurrentCoin);
             }
         }
         searchCoin();
       }
-    }, [inputValue]);
+    }, [inputValue, coinData]);
+
 
     /*
       iki tane parametre alır
@@ -138,7 +113,7 @@ function App() {
     const handleCountChange = (symbol: string, value: string) => {
         setCounts(prevCounts => ({
           ...prevCounts,
-          [symbol]: value,
+          [symbol]: Number(value),
         }));
     };
 
@@ -174,8 +149,40 @@ function App() {
           symbol: symbol,
           count: Number(value),
         };    
-        dispatch(updateCoinData(updateData))
+        dispatch(updateCoinData(updateData));
     }
+
+
+
+    const COLORS = ["#b8c0c7", "#00C49F", "#FFBB28", "#FF8042"];
+    
+    const RADIAN = Math.PI / 180;
+    const renderCustomizedLabel = ({
+      cx,
+      cy,
+      midAngle,
+      innerRadius,
+      outerRadius,
+      percent,
+      index
+    }: any) => {
+      const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+      const x = cx + radius * Math.cos(-midAngle * RADIAN);
+      const y = cy + radius * Math.sin(-midAngle * RADIAN);
+    
+      return (
+        <text
+          x={x}
+          y={y}
+          fill="white"
+          textAnchor={x > cx ? "start" : "end"}
+          dominantBaseline="central"
+        >
+          {`${(percent * 100).toFixed(0)}%`}
+        </text>
+      );
+    };
+
     
     return (
       <Container>
@@ -217,7 +224,7 @@ function App() {
             </Grid>
             <Modal
                 open={open}
-                onClose={handleModal}
+                onClose={handleCloseModal}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
               >
