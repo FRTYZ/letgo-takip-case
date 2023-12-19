@@ -24,12 +24,18 @@ function App() {
 
     const {coinData} = useSelector((state) => state.coinStorage);
 
-    const data = [
-      { name: "Group A", value: 400 },
-      { name: "Group B", value: 300 },
-      { name: "Group C", value: 300 },
-      { name: "Group D", value: 200 }
-    ];
+    const [chartData, setChartData] = useState({});
+
+    useEffect(() => {
+        if(coinData.length > 0){
+          const newData = coinData.map(item => ({
+            name: item.symbol,
+            value: Number(item.count)
+          }));
+
+          setChartData(newData);
+        }
+    },[coinData])
     
     const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
     
@@ -294,7 +300,7 @@ function App() {
                                                   type="number"
                                                   name="count"
                                                   className='searchCoinCounter'
-                                                  defaultValue={1}
+                                                  defaultValue={item.count}
                                                   onChange={(e) => handleCountChange(item.symbol, e.target.value)}
                                             />
                                           </Box>
@@ -341,7 +347,7 @@ function App() {
             <Grid item xl={4} lg={4} md={12} sm={12}>
               <PieChart width={600} height={900} className='letgo-charts-div'>
                   <Pie
-                    data={data}
+                    data={chartData}
                     cx={200}
                     cy={200}
                     labelLine={false}
