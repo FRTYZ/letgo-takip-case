@@ -10,20 +10,20 @@ const coinSlice = createSlice({
   initialState: { coinData: [] } as selectedCoinState, // initialState'ı dizi olarak tanımla
   reducers: {
     setCoinData: (state, action) => {
-      const existingIndex = state.coinData.findIndex((item) => item.symbol === action.payload.symbol);
-
-      if (existingIndex !== -1) {
-        // Eğer öğe bulunursa, mevcut öğeyi güncelle
-        state.coinData[existingIndex] = action.payload;
-      } else {
-        // Eğer öğe bulunamazsa, yeni öğeyi ekle
-        state.coinData.push(action.payload);
-      }
-    },
+        const existingIndex = state.coinData.findIndex((item) => item.symbol === action.payload.symbol);
+  
+        if (existingIndex !== -1) {
+          // Eğer öğe bulunursa, mevcut öğeyi güncelle
+          state.coinData[existingIndex] = action.payload;
+        } else {
+          // Eğer öğe bulunamazsa, yeni öğeyi ekle
+          state.coinData.push(action.payload);
+        }
+      },
     removeCoinBySymbol: (state, action) => {
         // Belirtilen sembol ismine sahip objeyi filtreleyerek yeni bir dizi oluştur
         state.coinData = state.coinData.filter((item) => item.symbol !== action.payload);
-    },
+    }
   },
 });
 
