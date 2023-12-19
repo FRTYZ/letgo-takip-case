@@ -76,6 +76,7 @@ function App() {
 
     const [inputValue, setInputValue] = useState<string>('');
     const [searchCoins, setSearchCoins] = useState([]);
+    const [currentCoin, setCurrentCoin] = useState({});
 
     const [counts, setCounts] = useState({});
 
@@ -130,7 +131,7 @@ function App() {
     */
     const handleAddCoin = (symbol: string) => {
         const count = counts[symbol] ? counts[symbol] : 1;
-
+        
          let filteredCoin = searchCoins.find((coin) =>
             coin.symbol.includes(symbol)
         );
@@ -144,6 +145,20 @@ function App() {
     const handleRemoveCoin = (symbolName: string) => {
         const symbol = symbolName;
         dispatch(removeCoinBySymbol(symbol)) 
+    }
+
+    const handleUpdateCoin = (symbolName: string) => {
+        const symbol = symbolName;
+        const count = counts[symbol];
+
+        let filteredCoin = coinData.find((coin) =>
+            coin.symbol.includes(symbol)
+        );
+
+        if(filteredCoin) {
+            filteredCoin['count'] = Number(count)
+            dispatch(setCoinData(filteredCoin)) 
+        }
     }
  
     return (
@@ -218,15 +233,18 @@ function App() {
                     </Grid>
                     <Grid container spacing={3} sx={{ marginBottom: '20px' }}>
                         <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                        {searchCoins.length > 0 && searchCoins.map((item, key) => (
                           <Card 
                               sx={{
                                   minWidth: 275,
                                   boxShadow: '0 1px 3px 0 rgba(0,47,52,.2), 0 1px 3px 0 rgba(0,47,52,.2)',
-                                  borderLeft: '4px solid #004bbe'
+                                  borderLeft: '4px solid #004bbe',
+                                  marginBottom: '20px',
+                                  paddingTop: '20px'
+                                  
                               }}
                           >
                             <CardContent>
-                            {searchCoins.length > 0 && searchCoins.map((item, key) => (
                                 <Grid container spacing={4} key={key} sx={{ marginBottom: '20px' }}>
                                     <Grid item lg={7} md={7} sm={7} xs={7}>
                                           <TextField
@@ -269,9 +287,9 @@ function App() {
                                         </Button>
                                     </Grid>
                                 </Grid>
-                              ))}
                             </CardContent>
                           </Card>
+                          ))}
                         </Grid>
                     </Grid>
                 </Box>
@@ -327,7 +345,7 @@ function App() {
                                                         '&:hover': {backgroundColor: '#17A948'}
                                                     }}
                                                     size="small"
-                                                    onClick={() => handleAddCoin(item.symbol)}
+                                                    onClick={() => handleUpdateCoin(item.symbol, )}
                                                 >
                                                 Update
                                             </Button>
