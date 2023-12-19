@@ -162,8 +162,8 @@ function App() {
                           padding: '15px 41px 16px 41px',
                           backgroundColor: '#1C49D0'
                       }}
-                    >
-                      Add Stock
+                    > 
+                      {coinData.length > 0 ? 'Add / Update' : 'Add Stock'}
                   </Button>
                   <Button 
                       variant="contained"
