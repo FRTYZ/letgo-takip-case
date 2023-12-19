@@ -104,7 +104,7 @@ function App() {
             const filteredCoins = getCoins.filter((coin) =>
                 coin.symbol.toLowerCase().includes(inputValue.toLowerCase())
             );
-
+            
             setSearchCoins(filteredCoins);
         }
         searchCoin();
@@ -129,16 +129,18 @@ function App() {
       bu ism ise counts state'inde arayıp count değerini alır
     */
     const handleAddCoin = (symbol: string) => {
-        const count = counts[symbol] ||1;
+        const count = symbol ? counts[symbol] : 1;
 
         let filteredCoin = searchCoins.find((coin) =>
             coin.symbol.includes(symbol)
         );
         
         if(filteredCoin){
-          filteredCoin['count'] = count;
+          filteredCoin['count'] = Number(count);
           dispatch(setCoinData(filteredCoin)) 
         }
+
+        console.log(count);
     };
  
     return (

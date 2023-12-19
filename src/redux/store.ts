@@ -10,7 +10,15 @@ const coinSlice = createSlice({
   initialState: { coinData: [] } as selectedCoinState, // initialState'ı dizi olarak tanımla
   reducers: {
     setCoinData: (state, action) => {
-      state.coinData = [...state.coinData, action.payload];
+      const existingIndex = state.coinData.findIndex((item) => item.symbol === action.payload.symbol);
+
+      if (existingIndex !== -1) {
+        // Eğer öğe bulunursa, mevcut öğeyi güncelle
+        state.coinData[existingIndex] = action.payload;
+      } else {
+        // Eğer öğe bulunamazsa, yeni öğeyi ekle
+        state.coinData.push(action.payload);
+      }
     },
   },
 });
