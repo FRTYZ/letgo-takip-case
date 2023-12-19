@@ -16,7 +16,7 @@ import {
 
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-import { setCoinData, removeCoinBySymbol } from './redux/store';
+import { setCoinData, removeCoinBySymbol, updateCoinData } from './redux/store';
 import { useSelector, useDispatch } from "react-redux";
 
 function App() {
@@ -76,7 +76,7 @@ function App() {
 
     const [inputValue, setInputValue] = useState<string>('');
     const [searchCoins, setSearchCoins] = useState([]);
-    const [currentCoin, setCurrentCoin] = useState({});
+    const [currentCoin, setCurrentCoin] = useState([]);
 
     const [counts, setCounts] = useState({});
 
@@ -94,6 +94,16 @@ function App() {
             const response = await fetch(url);
             const results = await response.json();
             setGetCoins(results);
+            
+            if(Object.keys(counts).length != 0) {
+                const result = {};
+                coinData.forEach(item => {
+                    const { symbol, count } = item;
+                    result[symbol] = count
+                })
+                setCounts(result);
+            }
+            
         }
         getCoins();
     },[])
@@ -107,6 +117,14 @@ function App() {
             );
             
             setSearchCoins(filteredCoins);
+
+            if(coinData?.length > 0) {
+              const filteredCurrentCoin = coinData.filter((coin) =>
+                coin.symbol.toLowerCase().includes(inputValue.toLowerCase())
+              );
+          
+              setCurrentCoin(filteredCurrentCoin);
+            }
         }
         searchCoin();
       }
@@ -131,14 +149,14 @@ function App() {
     */
     const handleAddCoin = (symbol: string) => {
         const count = counts[symbol] ? counts[symbol] : 1;
-        
-         let filteredCoin = searchCoins.find((coin) =>
+  
+        let filteredCoin = searchCoins.find((coin) =>
             coin.symbol.includes(symbol)
         );
         
         if(filteredCoin){
-          filteredCoin['count'] = Number(count);
-          dispatch(setCoinData(filteredCoin)) 
+            filteredCoin['count'] = Number(count);
+            dispatch(setCoinData(filteredCoin)) 
         }
     };
 
@@ -148,19 +166,17 @@ function App() {
     }
 
     const handleUpdateCoin = (symbolName: string) => {
-        const symbol = symbolName;
-        const count = counts[symbol];
+        const symbol: string = symbolName;
 
-        let filteredCoin = coinData.find((coin) =>
-            coin.symbol.includes(symbol)
-        );
+        const value: number = counts[symbol]
 
-        if(filteredCoin) {
-            filteredCoin['count'] = Number(count)
-            dispatch(setCoinData(filteredCoin)) 
-        }
+        const updateData = {
+          symbol: symbol,
+          count: Number(value),
+        };    
+        dispatch(updateCoinData(updateData))
     }
- 
+    
     return (
       <Container>
         <Grid container spacing={3}>
