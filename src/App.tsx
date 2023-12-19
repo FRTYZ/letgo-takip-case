@@ -240,11 +240,12 @@ function App() {
                       variant="contained"
                       onClick={handleModal}
                       sx={{
-                          marginRight:'15px',
+                          marginRight:'35px',
                           fontWeight: 300,
                           fontSize: '11px',
                           padding: '15px 41px 16px 41px',
-                          backgroundColor: '#1C49D0'
+                          backgroundColor: '#1C49D0',
+                          textTransform: 'none'
                       }}
                     > 
                       {coinData.length > 0 ? 'Add / Update' : 'Add Stock'}
@@ -256,7 +257,8 @@ function App() {
                           fontWeight: 300,
                           fontSize: '11px',
                           padding: '15px 41px 16px 41px',
-                          backgroundColor: '#1C49D0'
+                          backgroundColor: '#1C49D0',
+                          textTransform: 'none'
                       }}
                       onClick={() => handleRefresh()}
                     >
@@ -408,6 +410,8 @@ function App() {
                                                               backgroundColor: '#17A948',
                                                               color: '#ffffff',
                                                               marginRight: '5px',
+                                                              textTransform: 'none',
+                                                              
                                                               '&:hover': {backgroundColor: '#17A948'}
                                                           }}
                                                           size="small"
@@ -485,7 +489,7 @@ function App() {
                                           </Box>
                                       </Grid>
                                       <Grid item xl={8} lg={8} md={8} sm={10} xs={10}>
-                                        <Box sx={{ float: 'right', marginTop:'20px' }}>
+                                        <Box sx={{ float: 'right', marginTop:'16px' }}>
                                             <Button 
                                                     variant="contained" 
                                                     type='submit'
@@ -493,12 +497,16 @@ function App() {
                                                         backgroundColor: '#17A948',
                                                         color: '#ffffff',
                                                         marginRight: '5px',
+                                                        textTransform: 'none',
+                                                        fontWeight: 400,
+                                                        fontSize: '12px',
+                                                        padding: '5px 15px 5px 15px',
                                                         '&:hover': {backgroundColor: '#17A948'}
                                                     }}
                                                     size="small"
                                                     onClick={() => handleUpdateCoin(item.symbol, )}
                                                 >
-                                                Update
+                                                update
                                             </Button>
                                             <Button 
                                                     variant="contained" 
@@ -506,12 +514,16 @@ function App() {
                                                     sx={{
                                                       backgroundColor: '#C12126',
                                                       color: '#ffffff',
+                                                      fontWeight: 400,
+                                                      textTransform: 'none',
+                                                      fontSize: '12px',
+                                                      padding: '5px 15px 5px 15px',
                                                       '&:hover': {backgroundColor: '#C12126'}
                                                     }}
                                                     size="small"
                                                     onClick={() => handleRemoveCoin(item.symbol)}
                                                 >
-                                                Remove
+                                                remove
                                             </Button>
                                         </Box>
                                       </Grid>
