@@ -137,7 +137,7 @@ function App() {
               <Box 
                   sx={{ 
                     marginTop: '50px',
-                    marginBottom: '150px',
+                    marginBottom: '80px',
                     textAlign: { lg: 'left' ,md: 'left' ,sm: 'center', xs: 'center' }
                   }}
               >
@@ -262,29 +262,83 @@ function App() {
             </Modal>
         </Grid>
         <Grid container spacing={3}>
-            <Grid item xl={6} lg={6} md={12} sm={12}>
-              {coinData.length > 0 && coinData.map((item,key) => {
-                <Grid item xl={12} lg={12} md={12} sm={12} xs={12} key={key}>
-                  <Card 
-                    sx={{
-                        minWidth: 275,
-                        boxShadow: '0 1px 3px 0 rgba(0,47,52,.2), 0 1px 3px 0 rgba(0,47,52,.2)',
-                        borderLeft: '4px solid #004bbe'
-                    }}
-                  >
-                    <CardContent>
-                          <Typography variant="h6" component="div">
-                                  
-                          </Typography>
-                          <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                            adjective
-                          </Typography>
-                    </CardContent>
-                  </Card>
-                </Grid>
-                })}
+            <Grid item xl={8} lg={8} md={12} sm={12}>
+              {coinData.length > 0 && coinData.map((item,key) => (
+                  <Grid item xl={12} lg={12} md={12} sm={12} xs={12} key={key}>
+                    <Card 
+                      sx={{
+                          minWidth: 275,
+                          boxShadow: '0 1px 3px 0 rgba(0,47,52,.2), 0 1px 3px 0 rgba(0,47,52,.2)',
+                          borderLeft: '4px solid #004bbe',
+                          marginBottom: '20px',
+                          paddingTop: '20px',
+                          paddingLeft: '20px',
+                          paddingRight: '20px'
+                      }}
+                    >
+                      <CardContent>
+                          <Grid container spacing={1}>
+                              <Grid xl={6} lg={6} md={6} sm={12} xs={12}>
+                                  <Typography variant="h6" component="div">
+                                        {item.symbol}
+                                  </Typography>
+                                  <Typography sx={{ mb: 1.5 }} color="text.secondary">
+                                        {item.lastPrice}  - {item.weightedAvgPrice}
+                                  </Typography>
+                              </Grid>
+                              <Grid xl={6} lg={6} md={6} sm={12} xs={12}>
+                                  <Grid container>
+                                      <Grid xl={4} lg={4} md={4} sm={2} xs={2}>
+                                          <Box sx={{ marginTop: '8px' }}>
+                                            <input
+                                                  type="number"
+                                                  name="count"
+                                                  className='searchCoinCounter'
+                                                  defaultValue={1}
+                                                  onChange={(e) => handleCountChange(item.symbol, e.target.value)}
+                                            />
+                                          </Box>
+                                      </Grid>
+                                      <Grid xl={8} lg={8} md={8} sm={10} xs={10}>
+                                        <Box sx={{ float: 'right', marginTop:'11px' }}>
+                                            <Button 
+                                                    variant="contained" 
+                                                    type='submit'
+                                                    sx={{
+                                                        backgroundColor: '#17A948',
+                                                        color: '#ffffff',
+                                                        marginRight: '5px',
+                                                        '&:hover': {backgroundColor: '#17A948'}
+                                                    }}
+                                                    size="small"
+                                                    onClick={() => handleAddCoin(item.symbol)}
+                                                >
+                                                Update
+                                            </Button>
+                                            <Button 
+                                                    variant="contained" 
+                                                    type='submit'
+                                                    sx={{
+                                                      backgroundColor: '#C12126',
+                                                      color: '#ffffff',
+                                                      '&:hover': {backgroundColor: '#C12126'}
+                                                    }}
+                                                    size="small"
+                                                    onClick={() => handleAddCoin(item.symbol)}
+                                                >
+                                                Remove
+                                            </Button>
+                                        </Box>
+                                      </Grid>
+                                  </Grid>
+                              </Grid>
+                          </Grid>
+                      </CardContent>
+                    </Card>
+                  </Grid>
+                ))}
             </Grid>
-            <Grid item xl={6} lg={6} md={12} sm={12}>
+            <Grid item xl={4} lg={4} md={12} sm={12}>
               <PieChart width={600} height={900} className='letgo-charts-div'>
                   <Pie
                     data={data}
