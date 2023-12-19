@@ -95,7 +95,7 @@ function App() {
             if(coinData?.length > 0) {
               const filteredCurrentCoin = coinData.filter((coin) =>
                 coin.symbol.toLowerCase().includes(inputValue.toLowerCase())
-            );
+              );
           
               setCurrentCoin(filteredCurrentCoin);
             }
@@ -147,11 +147,34 @@ function App() {
 
         const updateData = {
           symbol: symbol,
-          count: Number(value),
+          data: {
+            count: Number(value),
+          }
         };    
         dispatch(updateCoinData(updateData));
     }
 
+    const handleRefresh = async() => {
+      const url = 'https://api2.binance.com/api/v3/ticker/24hr';
+      const response = await fetch(url);
+      const results = await response.json();
+
+      coinData.length > 0 && coinData.map(( item, key ) => {
+          const filteredCurrentCoin = results.find((coin) =>
+              coin.symbol.includes(item.symbol)
+          );
+          const newData = {
+            "symbol": item.symbol,
+            data: {
+              "weightedAvgPrice": filteredCurrentCoin.weightedAvgPrice,
+              "lastPrice": filteredCurrentCoin.lastPrice
+            }           
+          }
+
+          dispatch(updateCoinData(newData));
+      })
+      location.reload();
+    }
 
 
     const COLORS = ["#b8c0c7", "#00C49F", "#FFBB28", "#FF8042"];
@@ -219,6 +242,7 @@ function App() {
                           padding: '15px 41px 16px 41px',
                           backgroundColor: '#1C49D0'
                       }}
+                      onClick={() => handleRefresh()}
                     >
                       Refresh
                   </Button>
