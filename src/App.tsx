@@ -124,7 +124,7 @@ function App() {
       bu ism ise counts state'inde arayıp count değerini alır
     */
     const handleAddCoin = (symbol: string) => {
-        const count = counts[symbol] || 0;
+        const count = counts[symbol] ||1;
 
         let filteredCoin = searchCoins.find((coin) =>
             coin.symbol.includes(symbol)
@@ -356,7 +356,7 @@ function App() {
                     fill="#8884d8"
                     dataKey="value"
                   >
-                    {data.map((entry, index) => (
+                    {chartData.length > 0 && chartData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                     ))}
                   </Pie>
