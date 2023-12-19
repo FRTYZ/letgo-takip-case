@@ -80,7 +80,6 @@ function App() {
                 })
                 setCounts(result);
             }
-            
         }
         getCoins();
     },[])
@@ -156,7 +155,7 @@ function App() {
               count: Number(value),
             }
         };
-        
+
         dispatch(updateCoinData(updateData));
     }
 
@@ -184,6 +183,14 @@ function App() {
       })
       location.reload();
     }
+
+    useEffect(() => {
+        const invervalCoin = setInterval(() => {
+          handleRefresh();
+        }, 5 * 60 * 1000);
+
+        return () => clearInterval(invervalCoin);
+    }, [])
 
 
     const COLORS = ["#b8c0c7", "#00C49F", "#FFBB28", "#FF8042"];
