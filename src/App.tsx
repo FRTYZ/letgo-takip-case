@@ -38,7 +38,6 @@ function App() {
 
     const [inputValue, setInputValue] = useState<string>('');
     const [searchCoins, setSearchCoins] = useState<string[] | object>([]);
-    const [currentCoin, setCurrentCoin] = useState<string[] | object>([]);
 
     const [counts, setCounts] = useState<string[] | object>({});
 
@@ -92,14 +91,19 @@ function App() {
             );
             
             setSearchCoins(filteredCoins);
-
-            if(coinData?.length > 0) {
-              const filteredCurrentCoin = coinData.filter((coin) =>
-                coin.symbol.toLowerCase().includes(inputValue.toLowerCase())
-              );
-          
-              setCurrentCoin(filteredCurrentCoin);
+            
+            if(filteredCoins.length > 0 && coinData.length > 0){
+                filteredCoins.map((filterItem) => {
+                    coinData.map((coinItem) => {
+                        if(filterItem.symbol == coinItem.symbol){
+                            filterItem['has_coin'] = true;
+                            setSearchCoins((prev) => [...prev]);
+                        }
+                     
+                    })
+                })
             }
+
         }
         searchCoin();
       }
@@ -205,20 +209,20 @@ function App() {
       percent,
       index
     }: any) => {
-      const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
-      const x = cx + radius * Math.cos(-midAngle * RADIAN);
-      const y = cy + radius * Math.sin(-midAngle * RADIAN);
+          const radius = innerRadius + (outerRadius - innerRadius) * 0.5;
+          const x = cx + radius * Math.cos(-midAngle * RADIAN);
+          const y = cy + radius * Math.sin(-midAngle * RADIAN);
     
       return (
-        <text
-          x={x}
-          y={y}
-          fill="white"
-          textAnchor={x > cx ? "start" : "end"}
-          dominantBaseline="central"
-        >
-          {`${(percent * 100).toFixed(0)}%`}
-        </text>
+          <text
+              x={x}
+              y={y}
+              fill="white"
+              textAnchor={x > cx ? "start" : "end"}
+              dominantBaseline="central"
+          >
+            {`${(percent * 100).toFixed(0)}%`}
+          </text>
       );
     };
 
@@ -340,107 +344,68 @@ function App() {
                                         />
                                     </Grid>
                                     <Grid item lg={3} md={3} sm={3} xs={3} sx={{ display: 'grid' }}>
-                                        <Button 
+                                        {item.has_coin ? (
+                                           <Box sx={{ float: 'right', marginTop:'5px' }}>
+                                              <Button 
+                                                      variant="contained" 
+                                                      type='submit'
+                                                      sx={{
+                                                          backgroundColor: '#17A948',
+                                                          color: '#ffffff',
+                                                          marginRight: '5px',
+                                                          textTransform: 'none',
+                                                          fontWeight: 400,
+                                                          fontSize: '12px',
+                                                          padding: '5px 15px 5px 15px',
+                                                          '&:hover': {backgroundColor: '#17A948'}
+                                                      }}
+                                                      size="small"
+                                                      onClick={() => handleUpdateCoin(item.symbol, )}
+                                                  >
+                                                  update
+                                              </Button>
+                                              <Button 
+                                                      variant="contained" 
+                                                      type='submit'
+                                                      sx={{
+                                                        backgroundColor: '#C12126',
+                                                        color: '#ffffff',
+                                                        fontWeight: 400,
+                                                        textTransform: 'none',
+                                                        fontSize: '12px',
+                                                        padding: '5px 15px 5px 15px',
+                                                        '&:hover': {backgroundColor: '#C12126'}
+                                                      }}
+                                                      size="small"
+                                                      onClick={() => handleRemoveCoin(item.symbol)}
+                                                  >
+                                                  remove
+                                              </Button>
+                                          </Box>
+                                        ): (
+                                          <Button 
                                               variant="contained" 
                                               type='submit'
                                               sx={{
                                                 backgroundColor: '#1C49D0',
                                                 color: '#ffffff',
+                                                textTransform: 'none',
+                                                fontWeight: 400,
+                                                fontSize: '12px',
+                                                padding: '5px 15px 5px 15px',
                                               }}
                                               size="large"
                                               onClick={() => handleAddCoin(item.symbol)}
                                           >
-                                          Add
-                                        </Button>
+                                            Add
+                                          </Button>
+                                        )}
                                     </Grid>
                                 </Grid>
                             </CardContent>
                           </Card>
                           ))}
                         </Grid>
-                    </Grid>
-                    <Grid item xl={12} lg={12} md={12} sm={12}>
-                      {currentCoin && currentCoin.map((item, key) => (
-                        <Grid item xl={12} lg={12} md={12} sm={12} xs={12} key={key}>
-                          <Card 
-                            sx={{
-                                minWidth: 275,
-                                boxShadow: '0 1px 3px 0 rgba(0,47,52,.2), 0 1px 3px 0 rgba(0,47,52,.2)',
-                                borderLeft: '4px solid #004bbe',
-                                marginBottom: '20px',
-                                paddingBottom: 0
-                            }}
-                          >
-                            <CardContent sx={{ 
-                                    padding: {
-                                      lg: '15px 20px 10px 20px !important', 
-                                      xl: '15px 20px 10px 20px !important', 
-                                      md: '15px 20px 10px 20px !important', 
-                                      xs:'20px 20px 20px 20px !important' }, 
-                                      
-                                  }}>
-                                <Grid container spacing={1}>
-                                    <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                                        <Typography variant="h6" component="div">
-                                              {item.symbol}
-                                        </Typography>
-                                        <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                              {item.lastPrice}  - {item.weightedAvgPrice}
-                                        </Typography>
-                                    </Grid>
-                                    <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                                        <Grid container>
-                                            <Grid item xl={4} lg={4} md={4} sm={2} xs={2}>
-                                                <Box sx={{ marginTop: '15px' }}>
-                                                  <input
-                                                        type="number"
-                                                        name="count"
-                                                        className='searchCoinCounter'
-                                                        defaultValue={item.count}
-                                                        onChange={(e) => handleCountChange(item.symbol, e.target.value)}
-                                                  />
-                                                </Box>
-                                            </Grid>
-                                            <Grid item xl={8} lg={8} md={8} sm={10} xs={10}>
-                                              <Box sx={{ float: 'right', marginTop:'20px' }}>
-                                                  <Button 
-                                                          variant="contained" 
-                                                          type='submit'
-                                                          sx={{
-                                                              backgroundColor: '#17A948',
-                                                              color: '#ffffff',
-                                                              marginRight: '5px',
-                                                              textTransform: 'none',
-                                                              
-                                                              '&:hover': {backgroundColor: '#17A948'}
-                                                          }}
-                                                          size="small"
-                                                          onClick={() => handleUpdateCoin(item.symbol, )}
-                                                      >
-                                                      Update
-                                                  </Button>
-                                                  <Button 
-                                                          variant="contained" 
-                                                          type='submit'
-                                                          sx={{
-                                                            backgroundColor: '#C12126',
-                                                            color: '#ffffff',
-                                                            '&:hover': {backgroundColor: '#C12126'}
-                                                          }}
-                                                          size="small"
-                                                          onClick={() => handleRemoveCoin(item.symbol)}
-                                                      >
-                                                      Remove
-                                                  </Button>
-                                              </Box>
-                                            </Grid>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </CardContent>
-                          </Card>
-                        </Grid>
-                      ))}
                     </Grid>
                 </Box>
             </Modal>
