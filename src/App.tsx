@@ -129,9 +129,9 @@ function App() {
       bu ism ise counts state'inde arayıp count değerini alır
     */
     const handleAddCoin = (symbol: string) => {
-        const count = symbol ? counts[symbol] : 1;
+        const count = counts[symbol] ? counts[symbol] : 1;
 
-        let filteredCoin = searchCoins.find((coin) =>
+         let filteredCoin = searchCoins.find((coin) =>
             coin.symbol.includes(symbol)
         );
         
