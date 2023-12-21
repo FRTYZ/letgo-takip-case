@@ -117,10 +117,23 @@ function App() {
       sembol ismi alıp ve count değerini useState içinde tutar. bi sonraki değeri üstüne yazar
     */
     const handleCountChange = (symbol: string, value: string) => {
-        setCounts(prevCounts => ({
-          ...prevCounts,
-          [symbol]: Number(value),
-        }));
+        const valueRegex = /^[0-9]+$/;
+        const valueCheck = valueRegex.test(value);
+        
+        // eğer sadece pozitif sayı ise yazdırır 
+        if(valueCheck){
+            setCounts(prevCounts => ({
+              ...prevCounts,
+              [symbol]: Number(value),
+            }));
+        }
+        else{
+            // koşul sağlanmadığında default değer belirledik
+            setCounts(prevCounts => ({
+              ...prevCounts,
+              [symbol]: 1,
+            }));
+        }
     };
 
     /* 
@@ -337,13 +350,22 @@ function App() {
                                           />
                                     </Grid>
                                     <Grid item lg={2} md={2} sm={2} xs={2}>
-                                        <input
-                                            type="number"
-                                            name="count"
-                                            className='searchCoinCounter'
-                                            defaultValue={item.has_coin ? item.count : 1}
-                                            onChange={(e) => handleCountChange(item.symbol, e.target.value)}
-                                        />
+                                         <TextField
+                                              id="outlined-number"
+                                              type="number"
+                                              defaultValue={item.has_coin ? item.count : 1}
+                                              InputLabelProps={{
+                                                shrink: true
+                                              }}
+                                              InputProps={{
+                                                inputProps: { 
+                                                    max: 100, min: 1
+                                                },
+                                              }}
+                                              size='small'
+                                              value={counts[item.symbol]}
+                                              onChange={(e) => handleCountChange(item.symbol, e.target.value)}
+                                          />
                                     </Grid>
                                     <Grid item lg={3} md={3} sm={3} xs={3} sx={{ display: 'grid' }}>
                                         {item.has_coin ? (
@@ -443,58 +465,69 @@ function App() {
                                   </Typography>
                               </Grid>
                               <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                                  <Grid container>
-                                      <Grid item xl={4} lg={4} md={4} sm={2} xs={2}>
-                                          <Box sx={{ marginTop: '15px' }}>
-                                            <input
+                                <form>
+                                    <Grid container>
+                                        <Grid item xl={4} lg={4} md={4} sm={2} xs={2}>
+                                            <Box sx={{ marginTop: '15px' }}>
+                                              <TextField
+                                                  id="outlined-number"
                                                   type="number"
-                                                  name="count"
-                                                  className='searchCoinCounter'
                                                   defaultValue={item.count}
+                                                  InputLabelProps={{
+                                                    shrink: true
+                                                  }}
+                                                  InputProps={{
+                                                    inputProps: { 
+                                                        max: 100, min: 1
+                                                    },
+                                                  }}
+                                                  size='small'
+                                                  value={counts[item.symbol]}
                                                   onChange={(e) => handleCountChange(item.symbol, e.target.value)}
-                                            />
-                                          </Box>
-                                      </Grid>
-                                      <Grid item xl={8} lg={8} md={8} sm={10} xs={10}>
-                                        <Box sx={{ float: 'right', marginTop:'16px' }}>
-                                            <Button 
-                                                    variant="contained" 
-                                                    type='submit'
-                                                    sx={{
-                                                        backgroundColor: '#17A948',
+                                              />
+                                            </Box>
+                                        </Grid>
+                                        <Grid item xl={8} lg={8} md={8} sm={10} xs={10}>
+                                          <Box sx={{ float: 'right', marginTop:'16px' }}>
+                                              <Button 
+                                                      variant="contained" 
+                                                      type='submit'
+                                                      sx={{
+                                                          backgroundColor: '#17A948',
+                                                          color: '#ffffff',
+                                                          marginRight: '5px',
+                                                          textTransform: 'none',
+                                                          fontWeight: 400,
+                                                          fontSize: '12px',
+                                                          padding: '5px 15px 5px 15px',
+                                                          '&:hover': {backgroundColor: '#17A948'}
+                                                      }}
+                                                      size="small"
+                                                      onClick={() => handleUpdateCoin(item.symbol, )}
+                                                  >
+                                                  update
+                                              </Button>
+                                              <Button 
+                                                      variant="contained" 
+                                                      type='submit'
+                                                      sx={{
+                                                        backgroundColor: '#C12126',
                                                         color: '#ffffff',
-                                                        marginRight: '5px',
-                                                        textTransform: 'none',
                                                         fontWeight: 400,
+                                                        textTransform: 'none',
                                                         fontSize: '12px',
                                                         padding: '5px 15px 5px 15px',
-                                                        '&:hover': {backgroundColor: '#17A948'}
-                                                    }}
-                                                    size="small"
-                                                    onClick={() => handleUpdateCoin(item.symbol, )}
-                                                >
-                                                update
-                                            </Button>
-                                            <Button 
-                                                    variant="contained" 
-                                                    type='submit'
-                                                    sx={{
-                                                      backgroundColor: '#C12126',
-                                                      color: '#ffffff',
-                                                      fontWeight: 400,
-                                                      textTransform: 'none',
-                                                      fontSize: '12px',
-                                                      padding: '5px 15px 5px 15px',
-                                                      '&:hover': {backgroundColor: '#C12126'}
-                                                    }}
-                                                    size="small"
-                                                    onClick={() => handleRemoveCoin(item.symbol)}
-                                                >
-                                                remove
-                                            </Button>
-                                        </Box>
-                                      </Grid>
-                                  </Grid>
+                                                        '&:hover': {backgroundColor: '#C12126'}
+                                                      }}
+                                                      size="small"
+                                                      onClick={() => handleRemoveCoin(item.symbol)}
+                                                  >
+                                                  remove
+                                              </Button>
+                                          </Box>
+                                        </Grid>
+                                    </Grid>
+                                  </form>
                               </Grid>
                           </Grid>
                       </CardContent>
