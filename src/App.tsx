@@ -26,12 +26,12 @@ function App() {
 
     const [chartData, 
           setChartData] 
-        = useState(
-          [{
-            name: 'default',
-            value:1
-          }]
-        );
+          = useState(
+            [{
+              name: 'default',
+              value:1
+            }]
+          );
     
     const [open, setOpen] = useState<boolean>(false);
     const [getCoins, setGetCoins] = useState<string[] | object>([]);
@@ -106,18 +106,22 @@ function App() {
                 setSearchCoins(filteredCoins);
                 
                 if(filteredCoins.length > 0 && coinData.length > 0){
+
                     filteredCoins.map((filterItem) => {
+
                         coinData.map((coinItem) => {
                             if(filterItem.symbol === coinItem.symbol){
                                 filterItem['has_coin'] = true;
                                 filterItem['count'] = coinItem.count;
+
                                 setSearchCoins((prev) => [...prev]);
                             }
-                        
                         })
+
                     })
                 }
             }
+
             searchCoin();
         }
     }, [inputValue, coinData]);
