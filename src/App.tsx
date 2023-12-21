@@ -19,6 +19,8 @@ import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import { setCoinData, removeCoinBySymbol, updateCoinData } from './redux/store';
 import { useSelector, useDispatch } from "react-redux";
 
+import Coins from './components/Coins';
+
 function App() {
     const dispatch = useDispatch();
 
@@ -34,13 +36,12 @@ function App() {
           );
     
     const [open, setOpen] = useState<boolean>(false);
-    const [getCoins, setGetCoins] = useState<string[] | object>([]);
+    const [getCoins, setGetCoins] = useState<object[]>([]);
 
     const [inputValue, setInputValue] = useState<string>('');
-    const [searchCoins, setSearchCoins] = useState<string[] | object>([]);
+    const [typingTimeout, setTypingTimeout] = useState(null);
+    const [searchCoins, setSearchCoins] = useState<object[]>([]);
 
-    const [counts, setCounts] = useState<string[] | object>({});
-    
     /*
         -Binance'ten güncel api verilerini alır.
 
@@ -54,17 +55,6 @@ function App() {
             const results = await response.json();
 
             setGetCoins(results);
-            
-            if(Object.keys(counts).length != 0) {
-                const result = {};
-
-                coinData.forEach(item => {
-                    const { symbol, count } = item;
-                    result[symbol] = count
-                })
-
-                setCounts(result);
-            }
         }
 
         getCoins();
@@ -104,14 +94,14 @@ function App() {
                 );
                 
                 setSearchCoins(filteredCoins);
-                
+
                 if(filteredCoins.length > 0 && coinData.length > 0){
 
                     filteredCoins.map((filterItem) => {
 
                         coinData.map((coinItem) => {
                             if(filterItem.symbol === coinItem.symbol){
-                                filterItem['has_coin'] = true;
+                                filterItem['has_in_redux'] = true;
                                 filterItem['count'] = coinItem.count;
 
                                 setSearchCoins((prev) => [...prev]);
@@ -119,7 +109,7 @@ function App() {
                         })
 
                     })
-                }
+                } 
             }
 
             searchCoin();
@@ -150,87 +140,17 @@ function App() {
 
     //  Modal'daki search butonu için anlık olarak yazılan verisini alıp inputValue içinde yazar
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
-        setInputValue(event.target.value);
-    };
+        const inputValue = event.target.value;
 
-    /*
-        -iki tane parametre alır
-        biri sembolün ismi ve value olan o anki count değeri temsil eder.
-        sembol ismi alıp ve count değerini useState içinde tutar. bi sonraki değeri üstüne yazar
-    */
-    const handleCountChange = (symbol: string, value: string) => {
-        const valueRegex = /^[0-9]+$/;
-        const valueCheck = valueRegex.test(value);
-        
-        // eğer sadece pozitif sayı ise yazdırır 
-        if(valueCheck){
-            setCounts(prevCounts => ({
-              ...prevCounts,
-              [symbol]: Number(value),
-            }));
+        if(typingTimeout){
+          clearTimeout(typingTimeout);
         }
-        else{
-            // koşul sağlanmadığında default değer belirledik
-            setCounts(prevCounts => ({
-              ...prevCounts,
-              [symbol]: 1,
-            }));
-        }
+
+        setTypingTimeout(setTimeout(() => {
+          setInputValue(inputValue);
+        }, 1000) as any);
+
     };
-
-    /* 
-        -Modalda aranan coin için add butonuna basınca alıncak aksiyonu belirler
-
-        -symbol isminde tek bi parametre alır. 
-        
-        -searchCoins state'te tutulan dizi içinde coinlerin, kullanıcının tıklanınılan sembolün ismini alır.
-        bu ism ise counts state'inde arayıp count değerini alır
-    */
-    const handleAddCoin = (symbol: string) => {
-        const count = counts[symbol] ? counts[symbol] : 1;
-  
-        let filteredCoin = searchCoins.find((coin) =>
-            coin.symbol.includes(symbol)
-        );
-        
-        if(filteredCoin){
-            filteredCoin['count'] = Number(count);
-
-            dispatch(setCoinData(filteredCoin)) 
-        }
-    };
-
-    /*
-        Bir tane string türünde sembol ismi için parametre alır,
-        sembol ismini alıp redux'ta sembol ismini gönderip siliyoruz
-    */
-    const handleRemoveCoin = (symbolName: string) => {
-        const symbol = symbolName;
-
-        dispatch(removeCoinBySymbol(symbol)) 
-    }
-
-    /*
-        -Bir tane string türünde sembol ismi için parametre alır
-
-        -aldığı parametre ve count değeri ile yeni bi obje gönderip, ilgili sembolun bulunduğu objeyi günceller
-    */
-    const handleUpdateCoin = (symbolName: string) => {
-        const symbol: string = symbolName;
-        const value: number = counts[symbol]
-
-        const updateData: {
-            symbol: string,
-            data: object
-        } = {
-            symbol: symbol,
-            data: {
-              count: Number(value),
-            }
-        };
-
-        dispatch(updateCoinData(updateData));
-    }
 
     /*
         -handleRefresh fonksiyon ise, sayfada en üstte bulunan refresh butonu içindir.
@@ -265,7 +185,6 @@ function App() {
 
     //Chart ayarları
     const COLORS = ["#b8c0c7", "#00C49F", "#FFBB28", "#FF8042"];
-    
     const RADIAN = Math.PI / 180;
     
     /* 
@@ -375,117 +294,7 @@ function App() {
                       </Grid>
                       <Grid container spacing={3} sx={{ marginBottom: '20px' }}>
                           <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-                          {searchCoins.length > 0 && searchCoins.map((item, key) => (
-                            <Card 
-                                sx={{
-                                    minWidth: 275,
-                                    boxShadow: '0 1px 3px 0 rgba(0,47,52,.2), 0 1px 3px 0 rgba(0,47,52,.2)',
-                                    borderLeft: '4px solid #004bbe',
-                                    marginBottom: '20px',
-                                    paddingTop: '20px'
-                                    
-                                }}
-                                key={key}
-                            >
-                              <CardContent>
-                                  <Grid container spacing={4} key={key} sx={{ marginBottom: '20px' }}>
-                                      <Grid item lg={7} md={7} sm={7} xs={7}>
-                                            <TextField
-                                                fullWidth
-                                                size='small'
-                                                id="sembolName"
-                                                name="sembolName"
-                                                className='searchCoinSembolName'
-                                                value={`${item.symbol} - ${item.lastPrice}`}
-                                                InputProps={{
-                                                    readOnly: true,
-                                                }}
-                                                variant='standard'
-                                                sx={{ 
-                                                      paddingTop: '8px'
-                                                  }}
-                                            />
-                                      </Grid>
-                                      <Grid item lg={2} md={2} sm={2} xs={2}>
-                                          <TextField
-                                                id="outlined-number"
-                                                type="number"
-                                                defaultValue={item.has_coin ? item.count : 1}
-                                                InputLabelProps={{
-                                                  shrink: true
-                                                }}
-                                                InputProps={{
-                                                  inputProps: { 
-                                                      max: 100, min: 1
-                                                  },
-                                                }}
-                                                size='small'
-                                                value={counts[item.symbol]}
-                                                onChange={(e) => handleCountChange(item.symbol, e.target.value)}
-                                            />
-                                      </Grid>
-                                      <Grid item lg={3} md={3} sm={3} xs={3} sx={{ display: 'grid' }}>
-                                          {item.has_coin ? (
-                                            <Box sx={{ float: 'right', marginTop:'5px' }}>
-                                                <Button 
-                                                        variant="contained" 
-                                                        type='submit'
-                                                        sx={{
-                                                            backgroundColor: '#17A948',
-                                                            color: '#ffffff',
-                                                            marginRight: '5px',
-                                                            textTransform: 'none',
-                                                            fontWeight: 400,
-                                                            fontSize: '12px',
-                                                            padding: '5px 15px 5px 15px',
-                                                            '&:hover': {backgroundColor: '#17A948'}
-                                                        }}
-                                                        size="small"
-                                                        onClick={() => handleUpdateCoin(item.symbol, )}
-                                                    >
-                                                    update
-                                                </Button>
-                                                <Button 
-                                                        variant="contained" 
-                                                        type='submit'
-                                                        sx={{
-                                                          backgroundColor: '#C12126',
-                                                          color: '#ffffff',
-                                                          fontWeight: 400,
-                                                          textTransform: 'none',
-                                                          fontSize: '12px',
-                                                          padding: '5px 15px 5px 15px',
-                                                          '&:hover': {backgroundColor: '#C12126'}
-                                                        }}
-                                                        size="small"
-                                                        onClick={() => handleRemoveCoin(item.symbol)}
-                                                    >
-                                                    remove
-                                                </Button>
-                                            </Box>
-                                          ): (
-                                            <Button 
-                                                variant="contained" 
-                                                type='submit'
-                                                sx={{
-                                                  backgroundColor: '#1C49D0',
-                                                  color: '#ffffff',
-                                                  textTransform: 'none',
-                                                  fontWeight: 400,
-                                                  fontSize: '12px',
-                                                  padding: '5px 15px 5px 15px',
-                                                }}
-                                                size="large"
-                                                onClick={() => handleAddCoin(item.symbol)}
-                                            >
-                                              Add
-                                            </Button>
-                                          )}
-                                      </Grid>
-                                  </Grid>
-                              </CardContent>
-                            </Card>
-                            ))}
+                            {searchCoins &&  <Coins data={searchCoins} searchCoin={true} /> }
                           </Grid>
                       </Grid>
                   </Box>
@@ -493,102 +302,7 @@ function App() {
           </Grid>
           <Grid container spacing={3}>
               <Grid item xl={8} lg={8} md={12} sm={12}>
-                {coinData.length > 0 && coinData.map((item,key) => (
-                    <Grid item xl={12} lg={12} md={12} sm={12} xs={12} key={key}>
-                      <Card 
-                        sx={{
-                            minWidth: 275,
-                            boxShadow: '0 1px 3px 0 rgba(0,47,52,.2), 0 1px 3px 0 rgba(0,47,52,.2)',
-                            borderLeft: '4px solid #004bbe',
-                            marginBottom: '20px',
-                            paddingBottom: 0
-                        }}
-                      >
-                        <CardContent sx={{ 
-                                padding: {
-                                  lg: '15px 20px 10px 20px !important', 
-                                  xl: '15px 20px 10px 20px !important', 
-                                  md: '15px 20px 10px 20px !important', 
-                                  xs:'20px 20px 20px 20px !important' }, 
-                                  
-                              }}>
-                            <Grid container spacing={1}>
-                                <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                                    <Typography variant="h6" component="div">
-                                          {item.symbol}
-                                    </Typography>
-                                    <Typography sx={{ mb: 1.5 }} color="text.secondary">
-                                          {item.lastPrice}  - {item.weightedAvgPrice}
-                                    </Typography>
-                                </Grid>
-                                <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                                    <Grid container>
-                                        <Grid item xl={4} lg={4} md={4} sm={2} xs={2}>
-                                            <Box sx={{ marginTop: '15px' }}>
-                                              <TextField
-                                                  id="outlined-number"
-                                                  type="number"
-                                                  defaultValue={item.count}
-                                                  InputLabelProps={{
-                                                    shrink: true
-                                                  }}
-                                                  InputProps={{
-                                                    inputProps: { 
-                                                        max: 100, min: 1
-                                                    },
-                                                  }}
-                                                  size='small'
-                                                  value={counts[item.symbol]}
-                                                  onChange={(e) => handleCountChange(item.symbol, e.target.value)}
-                                              />
-                                            </Box>
-                                        </Grid>
-                                        <Grid item xl={8} lg={8} md={8} sm={10} xs={10}>
-                                          <Box sx={{ float: 'right', marginTop:'16px' }}>
-                                              <Button 
-                                                      variant="contained" 
-                                                      type='submit'
-                                                      sx={{
-                                                          backgroundColor: '#17A948',
-                                                          color: '#ffffff',
-                                                          marginRight: '5px',
-                                                          textTransform: 'none',
-                                                          fontWeight: 400,
-                                                          fontSize: '12px',
-                                                          padding: '5px 15px 5px 15px',
-                                                          '&:hover': {backgroundColor: '#17A948'}
-                                                      }}
-                                                      size="small"
-                                                      onClick={() => handleUpdateCoin(item.symbol, )}
-                                                  >
-                                                  update
-                                              </Button>
-                                              <Button 
-                                                      variant="contained" 
-                                                      type='submit'
-                                                      sx={{
-                                                        backgroundColor: '#C12126',
-                                                        color: '#ffffff',
-                                                        fontWeight: 400,
-                                                        textTransform: 'none',
-                                                        fontSize: '12px',
-                                                        padding: '5px 15px 5px 15px',
-                                                        '&:hover': {backgroundColor: '#C12126'}
-                                                      }}
-                                                      size="small"
-                                                      onClick={() => handleRemoveCoin(item.symbol)}
-                                                  >
-                                                  remove
-                                              </Button>
-                                          </Box>
-                                        </Grid>
-                                    </Grid>
-                                </Grid>
-                            </Grid>
-                        </CardContent>
-                      </Card>
-                    </Grid>
-                  ))}
+                    {coinData && <Coins data={coinData} searchCoin={false} /> }
               </Grid>
               <Grid item xl={4} lg={4} md={12} sm={12}>
                 <PieChart width={600} height={900} className='letgo-charts-div'>
