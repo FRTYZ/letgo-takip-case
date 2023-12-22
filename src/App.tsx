@@ -16,7 +16,7 @@ import {
 
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-import { setCoinData, removeCoinBySymbol, updateCoinData } from './redux/store';
+import { updateCoinData } from './redux/store';
 import { useSelector, useDispatch } from "react-redux";
 
 import Coins from './components/Coins';
@@ -88,34 +88,28 @@ function App() {
 
     useEffect(() => {
         if(inputValue){
-            const searchCoin = async() => {
-                const filteredCoins = getCoins.filter((coin) =>
-                    coin.symbol.toLowerCase().includes(inputValue.toLowerCase())
-                );
-                
-                setSearchCoins(filteredCoins);
+              const searchCoin = async() => {
+                    const filteredSearchCoins = getCoins.filter((coin) =>
+                        coin.symbol.toLowerCase().includes(inputValue.toLowerCase())
+                    );
 
-                if(filteredCoins.length > 0 && coinData.length > 0){
+                    const updatedSearchCoins = filteredSearchCoins.map(searchCoin => {
+                    const localCoin = coinData.find(localCoin => localCoin.symbol === searchCoin.symbol);
 
-                    filteredCoins.map((filterItem) => {
+                    if (localCoin && localCoin !== 'undefined') {
+                        // Eğer eşleşen sembol varsa count değerini ekleyerek güncelle
+                        return { ...searchCoin, count: localCoin.count, has_in_redux: true };
+                    }  
+                        return { ...searchCoin, count: 1, has_in_redux: false };
+                    });
+                  
+                    setSearchCoins(updatedSearchCoins);
+              }
 
-                        coinData.map((coinItem) => {
-                            if(filterItem.symbol === coinItem.symbol){
-                                filterItem['has_in_redux'] = true;
-                                filterItem['count'] = coinItem.count;
-
-                                setSearchCoins((prev) => [...prev]);
-                            }
-                        })
-
-                    })
-                } 
-            }
-
-            searchCoin();
+              searchCoin();
         }
-    }, [inputValue, coinData]);
 
+    }, [inputValue, coinData]);
 
     // 5dk bir güncelleme sağlıyor
     useEffect(() => {
@@ -128,15 +122,8 @@ function App() {
     }, [])
 
 
-    // Modal açılmasını sağlar
+    // Modal açılıp / kapanmasını sağlar
     const handleModal = () => setOpen(!open);
-
-    // modal kapanıp sayfanın yenilenmesini sağlar
-    const handleCloseModal = () => {
-        setOpen(false);
-
-        location.reload()
-    }
 
     //  Modal'daki search butonu için anlık olarak yazılan verisini alıp inputValue içinde yazar
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -216,7 +203,6 @@ function App() {
         );
     };
 
-    
     return (
       <Container
         maxWidth='xl'
@@ -262,7 +248,7 @@ function App() {
               </Grid>
               <Modal
                   open={open}
-                  onClose={handleCloseModal}
+                  onClose={handleModal}
                   aria-labelledby="modal-modal-title"
                   aria-describedby="modal-modal-description"
                 >

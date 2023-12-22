@@ -24,16 +24,19 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin }) => {
     
     const {coinData} = useSelector((state) => state.coinStorage);
 
-    const [coinsCardData, setCoinsCardData] = useState<object[] | object>(data);
-    const [counts, setCounts] = useState<string[] | object[]>({});
+    const [coinsCardData, setCoinsCardData] = useState<object[] | object>([]);
+    const [counts, setCounts] = useState<object | object[]>({});
 
+    // Propstan gelen data veri geldiği zamanda çalışır
     useEffect(() => {
         setCoinsCardData(data)
     },[data])
 
+    // counts verilerini reduxtan alıp counts stateini günceller
     useEffect(() => {
         const getCurrentCoins = () => {
-            if(Object.keys(counts).length != 0) {
+
+            if(coinData.length > 0) {
                 const result = {};
 
                 coinData.forEach(item => {
@@ -41,13 +44,18 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin }) => {
                     result[symbol] = count
                 })
 
-                setCounts(result);
+                /* kullanıcı önceden count değiştirdiği coin varsa onlarla beraber
+                    reduxtaki count verilerle günceller
+                */
+                setCounts(prevCounts => ({
+                    ...prevCounts, ...result
+                }))
             }
         }
 
         getCurrentCoins();
 
-    },[])
+    },[coinData])
 
     /*
         -iki tane parametre alır
@@ -84,15 +92,23 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin }) => {
     */
     const handleAddCoin = (symbol: string) => {
         const count = counts[symbol] ? counts[symbol] : 1;
-        
-        let filteredCoin = searchCoin && data.find((coin) =>
+ 
+        let filteredCoin = data.find((coin) =>
             coin.symbol.includes(symbol)
         );
         
         if(filteredCoin){
             filteredCoin['count'] = Number(count);
 
+            if(searchCoin){
+                filteredCoin['has_in_redux'] = true
+            }
+
             dispatch(setCoinData(filteredCoin)) 
+
+            setCoinsCardData((prev: object[]) =>  {
+                return [...prev, filteredCoin]
+            })
         }
     };
 
@@ -103,21 +119,28 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin }) => {
     const handleRemoveCoin = (symbolName: string) => {
         const symbol = symbolName;
 
-        coinsCardData.map((coinItem) => {
-            if(coinItem.symbol === symbol){
-                coinItem['has_in_redux'] = false;
-                coinItem['count'] = 1;
-
-                setCoinsCardData((prev) => [...prev]);
-
-                setCounts(prevCounts => ({
-                    ...prevCounts,
-                    [symbol]: 1,
-                }));
-            }
-        })
-            
         dispatch(removeCoinBySymbol(symbol));
+            
+        if(searchCoin){
+            const updateData: {
+                symbol: string,
+                data: object
+            } = {
+                symbol: symbol,
+                data: {
+                    count:0,
+                    has_in_redux: false
+                }
+            };
+
+            dispatch(updateCoinData(updateData));
+
+            setCounts(prevCounts => ({
+                ...prevCounts,
+                [symbol]: 1,
+            }));
+            
+        }
     }
 
     /*
@@ -127,7 +150,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin }) => {
     */
     const handleUpdateCoin = (symbolName: string) => {
         const symbol: string = symbolName;
-        const value: number = counts[symbol]
+        const value: number = counts[symbol];
 
         const updateData: {
             symbol: string,
@@ -201,13 +224,13 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin }) => {
                                             }}
                                             size='small'
                                             value={counts[item.symbol]}
-                                            defaultValue={(searchCoin && !(item.has_in_redux)) ? 1 : item.count}
+                                            defaultValue={!(item.has_in_redux) ? 1 : item.count}
                                             onChange={(e) => handleCountChange(item.symbol, e.target.value)}
                                         />
                                     </Box>
                                 </Grid>
                                 <Grid item xl={6} lg={6} md={6} sm={10} xs={10}>
-                                    {!(item.has_in_redux) && searchCoin ? (
+                                    {!(item.has_in_redux) ? (
                                         <Box sx={{ float:'right' }}>
                                             <Button 
                                                 variant="contained" 
