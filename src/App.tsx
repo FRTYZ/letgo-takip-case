@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, lazy, Suspense } from 'react'
 import './App.css'
 
 import { 
@@ -19,7 +19,7 @@ import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import { updateCoinData } from './redux/store';
 import { useSelector, useDispatch } from "react-redux";
 
-import Coins from './components/Coins';
+const Coins = lazy(() => import('./components/Coins'));
 
 function App() {
     const dispatch = useDispatch();
@@ -280,7 +280,9 @@ function App() {
                       </Grid>
                       <Grid container spacing={3} sx={{ marginBottom: '20px' }}>
                           <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-                            {searchCoins &&  <Coins data={searchCoins} searchCoin={true} /> }
+                            <Suspense fallback={<div>isLoading</div>}>
+                                <Coins data={searchCoins} searchCoin={true} />
+                            </Suspense>
                           </Grid>
                       </Grid>
                   </Box>
@@ -288,7 +290,9 @@ function App() {
           </Grid>
           <Grid container spacing={3}>
               <Grid item xl={8} lg={8} md={12} sm={12}>
-                    {coinData && <Coins data={coinData} searchCoin={false} /> }
+                  <Suspense fallback={<div>isLoading</div>}>
+                        {coinData && <Coins data={coinData} searchCoin={false} /> }
+                    </Suspense>
               </Grid>
               <Grid item xl={4} lg={4} md={12} sm={12}>
                 <PieChart width={600} height={900} className='letgo-charts-div'>
