@@ -35,10 +35,12 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         // arama yaptığında ilk 10 verileri almasını sağlıyor
         if(searchCoin){
             setCoinsCardData(Array.isArray(data) ? data.slice(0, pageSize) : []);
+
         }
         else{
             // portföydeki verileri temsil eder.
             setCoinsCardData(data)
+
         } 
 
     },[data])
@@ -58,6 +60,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                     if (entry.isIntersecting) {
                         setPageNumber((prev) => prev + 1)
                     }
+
                 });
             };
             
@@ -75,11 +78,13 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         
             if (targetRef.current) {
                 observer.observe(targetRef.current);
+
             }
         
             return () => {
                 if (targetRef.current) {
                     observer.unobserve(targetRef.current);
+
                 }
             };
         }
@@ -96,13 +101,16 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
             const limitedData = data.slice(startIndex, endIndex);
         
             if(limitedData.length > 0){
-                setCoinsCardData((prevData) => [...prevData, ...limitedData]);
+                setCoinsCardData((prevData) => [ ...prevData, ...limitedData ]);
+
             }
+
         }
 
         // bu yapının modal açılıp arama yaptığında çalışmasını sağlar
         if(searchCoin){
             fetchData()
+
         }
         
       },[pageNumber])
@@ -124,6 +132,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                 setCounts(prevCounts => ({
                     ...prevCounts, ...result
                 }))
+
             }
         }
 
@@ -146,6 +155,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                 ...prevCounts,
                 [symbol]: Number(value),
             }));
+
         }
         else{
             // koşul sağlanmadığında default değer belirledik
@@ -153,6 +163,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                 ...prevCounts,
                 [symbol]: 1,
             }));
+
         }
     };
 
@@ -181,7 +192,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         )) as FilteredCoinDefine;
 
         if(filteredCoin){
-            const filteredCoinTwin: FilteredCoinDefine = {...filteredCoin}
+            const filteredCoinTwin: FilteredCoinDefine = { ...filteredCoin }
 
             filteredCoinTwin['count'] = Number(count)
            
@@ -200,6 +211,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                   return obj;
                 })
             })
+
         }
     };
 
@@ -235,7 +247,9 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                 return prevObjects.map(obj => {
                   if (obj.symbol === symbol) {
                     return { ...obj, has_in_redux: false, count: 1 }
+
                   }
+
                   return obj;
                 })
             })
