@@ -127,7 +127,7 @@ function App() {
 
 
     // Binance'ten güncel api verilerini alır.
-    const getCoinsFromApi = async() => {
+    const getCoinsFromApi = async(): Promise<object[]> => {
         const url = 'https://api2.binance.com/api/v3/ticker/24hr';
         const response = await fetch(url);
         const results = await response.json();
@@ -153,27 +153,30 @@ function App() {
         ardından sembol ismiyle ve yeni değerleri reduxa gönderip güncelleniyor.
     */
     const handleRefresh = async() => {
-        const results = await getCoinsFromApi();
+        const results: object[] = await getCoinsFromApi();
 
-          // Card component tip tanımlaması
-          type refreshDataType = {
-              symbol?: string,
-              count?: number
-          }
+        // Card component tip tanımlaması
+        type refreshDataType = {
+            symbol?: string,
+            count?: number
+        }
 
         coinData.length > 0 && coinData.map(( item: refreshDataType ) => {
-              const filteredCurrentCoin = results.find((coin: string) =>
+              const filteredCurrentCoin = results.find((coin: object) =>
                   coin.symbol.includes(item.symbol)
-              );
+              )
 
               const newData: {
                   symbol: string | undefined,
-                  data: object
+                  data: {
+                    weightedAvgPrice: number,
+                    lastPrice: number
+                  }
               } = {
                   symbol: item.symbol,
                   data: {
-                    "weightedAvgPrice": filteredCurrentCoin.weightedAvgPrice,
-                    "lastPrice": filteredCurrentCoin.lastPrice
+                    weightedAvgPrice: filteredCurrentCoin?.weightedAvgPrice,
+                    lastPrice: filteredCurrentCoin?.lastPrice
                   }           
               }
 
