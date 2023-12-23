@@ -325,17 +325,17 @@ function App() {
               </Modal>
           </Grid>
           <Grid container spacing={3}>
-              <Grid item xl={8} lg={8} md={12} sm={12}>
+              <Grid item xl={6} lg={6} md={12} sm={12}>
                   <Suspense fallback={<CoinsLoader />}>
                         {coinData && <Coins data={coinData} searchCoin={false} targetRef={targetRef} /> }
                     </Suspense>
               </Grid>
-              <Grid item xl={4} lg={4} md={12} sm={12}>
-                <PieChart width={600} height={900} className='letgo-charts-div'>
+              <Grid item xl={6} lg={6} md={12} sm={12}>
+                <PieChart width={800} height={600} className='letgo-charts-div'>
                     <Pie
                       data={chartData}
-                      cx={200}
-                      cy={200}
+                      cx={400}
+                      cy={300}
                       labelLine={false}
                       label={renderCustomizedLabel}
                       outerRadius={200}
