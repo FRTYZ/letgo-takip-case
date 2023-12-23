@@ -35,12 +35,10 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         // arama yaptığında ilk 10 verileri almasını sağlıyor
         if(searchCoin){
             setCoinsCardData(Array.isArray(data) ? data.slice(0, pageSize) : []);
-
         }
         else{
             // portföydeki verileri temsil eder.
             setCoinsCardData(data)
-
         } 
 
     },[data])
@@ -78,13 +76,11 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         
             if (targetRef.current) {
                 observer.observe(targetRef.current);
-
             }
         
             return () => {
                 if (targetRef.current) {
                     observer.unobserve(targetRef.current);
-
                 }
             };
         }
@@ -102,22 +98,23 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         
             if(limitedData.length > 0){
                 setCoinsCardData((prevData) => [ ...prevData, ...limitedData ]);
-
             }
 
         }
 
         // bu yapının modal açılıp arama yaptığında çalışmasını sağlar
         if(searchCoin){
-            fetchData()
-
+            fetchData();
         }
         
       },[pageNumber])
 
-    // counts verilerini reduxtan alıp counts stateini günceller
+    /*
+        -Kullanıcının reduxta kaydettiği portföylerin sembol ve count isimlerini alır
+        bununla ise counts adındaki state yazar
+    */
     useEffect(() => {
-        const getCurrentCoins = () => {
+        const getCurrentCoinCounts = () => {
             if(coinData.length > 0) {
                 const result = {};
 
@@ -136,7 +133,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
             }
         }
 
-        getCurrentCoins();
+        getCurrentCoinCounts();
 
     },[coinData])
 
@@ -247,7 +244,6 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                 return prevObjects.map(obj => {
                   if (obj.symbol === symbol) {
                     return { ...obj, has_in_redux: false, count: 1 }
-
                   }
 
                   return obj;
