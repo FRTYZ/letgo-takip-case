@@ -24,10 +24,14 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
     const dispatch = useDispatch();
     const {coinData} = useSelector((state) => state.coinStorage);
 
+    //--------- UseState Area --------------
+
     const [coinsCardData, setCoinsCardData] = useState<object[]>([]);
     const [counts, setCounts] = useState<object>({});
     const [pageNumber, setPageNumber] = useState(1);
     const pageSize = 10; // Her sayfada gösterilecek öğe sayısı
+
+    //--------- UseEffect Area --------------
 
     // Propstan gelen data veri geldiği zamanda çalışır
     useEffect(() => {
@@ -136,6 +140,8 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         getCurrentCoinCounts();
 
     },[coinData])
+
+    //--------- Function Area --------------
 
     /*
         -iki tane parametre alır
@@ -255,7 +261,6 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
 
     /*
         -Bir tane string türünde sembol ismi için parametre alır
-
         -aldığı parametre ve count değeri ile yeni bi obje gönderip, ilgili sembolun bulunduğu objeyi günceller
     */
     const handleUpdateCoin = (symbolName: string) => {
@@ -367,27 +372,27 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                             }}
                                         >
                                                 <Button 
-                                                        variant="contained" 
-                                                        type='submit'
-                                                        sx={{
-                                                            backgroundColor: '#17A948',
-                                                            color: '#ffffff',
-                                                            marginRight: '5px',
-                                                            textTransform: 'none',
-                                                            fontWeight: 400,
-                                                            fontSize: '12px',
-                                                            padding: '8px 15px 8px 15px',
-                                                            '&:hover': {backgroundColor: '#17A948'}
-                                                        }}
-                                                        size="small"
-                                                        onClick={() => handleUpdateCoin(item.symbol, )}
+                                                    variant="contained" 
+                                                    type='submit'
+                                                    sx={{
+                                                        backgroundColor: '#17A948',
+                                                        color: '#ffffff',
+                                                        marginRight: '5px',
+                                                        textTransform: 'none',
+                                                        fontWeight: 400,
+                                                        fontSize: '12px',
+                                                        padding: '8px 15px 8px 15px',
+                                                        '&:hover': {backgroundColor: '#17A948'}
+                                                    }}
+                                                    size="small"
+                                                    onClick={() => handleUpdateCoin(item.symbol, )}
                                                     >
                                                     update
                                                 </Button>
                                                 <Button 
-                                                        variant="contained" 
-                                                        type='submit'
-                                                        sx={{
+                                                    variant="contained" 
+                                                    type='submit'
+                                                    sx={{
                                                         backgroundColor: '#C12126',
                                                         color: '#ffffff',
                                                         fontWeight: 400,
@@ -395,10 +400,10 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                                         fontSize: '12px',
                                                         padding: '8px 15px 8px 15px',
                                                         '&:hover': {backgroundColor: '#C12126'}
-                                                        }}
-                                                        size="small"
-                                                        onClick={() => handleRemoveCoin(item.symbol)}
-                                                    >
+                                                    }}
+                                                    size="small"
+                                                    onClick={() => handleRemoveCoin(item.symbol)}
+                                                >
                                                     remove
                                                 </Button>
                                         </Box>

@@ -20,9 +20,12 @@ import CoinsLoader from './components/CoinsLoader';
 const Coins = lazy(() => import('./components/Coins'));
 
 function App() {
-    const dispatch = useDispatch();
 
+    //--------- Redux area --------------
+    const dispatch = useDispatch();
     const {coinData} = useSelector((state) => state.coinStorage);
+
+    //--------- UseState area --------------
 
     const [chartData, setChartData] = useState<object[] | object>([]);
     
@@ -32,7 +35,12 @@ function App() {
     const [inputValue, setInputValue] = useState<string>('');
     const [typingTimeout, setTypingTimeout] = useState(null);
     const [searchCoins, setSearchCoins] = useState<object[]>([]);
+
+    //--------- UseRef area --------------
+
     const targetRef = useRef<HTMLDivElement>(null);
+
+    //--------- UseEffect area --------------
 
     // güncel coin verileri alan fonksiyonu çalıştırır
     useEffect(() => {
@@ -114,12 +122,13 @@ function App() {
         return () => clearInterval(invervalCoin);
     }, [])
 
+    //--------- Function area --------------
 
     // Modal açılıp / kapanmasını sağlar
     const handleModal = () => setOpen(!open);
 
 
-    //-Binance'ten güncel api verilerini alır.
+    // Binance'ten güncel api verilerini alır.
     const getCoinsFromApi = async() => {
         const url = 'https://api2.binance.com/api/v3/ticker/24hr';
         const response = await fetch(url);
@@ -183,7 +192,8 @@ function App() {
        
     }
 
-    //Chart ayarları
+    //--------- Chart Setting area --------------
+
     const COLORS = ["#b8c0c7", "#00C49F", "#FFBB28", "#FF8042"];
     const RADIAN = Math.PI / 180;
     
