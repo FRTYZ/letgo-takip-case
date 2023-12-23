@@ -1,7 +1,7 @@
 import { AnyAction, configureStore, createSlice } from '@reduxjs/toolkit';
 
 interface selectedCoinState {
-    coinData: any[]; // Coin verilerini tutan diziyi tanımla
+    coinData: object[]; // Coin verilerini tutan diziyi tanımla
 }
 
 // coinSlice oluşturulması ve reducer tanımlanması

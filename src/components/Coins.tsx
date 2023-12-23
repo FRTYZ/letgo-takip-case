@@ -35,16 +35,13 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
 
     // Propstan gelen data veri geldiği zamanda çalışır
     useEffect(() => {
-
         // arama yaptığında ilk 10 verileri almasını sağlıyor
         if(searchCoin){
             setCoinsCardData(Array.isArray(data) ? data.slice(0, pageSize) : []);
         }
         else{
-            // portföydeki verileri temsil eder.
             setCoinsCardData(data)
         } 
-
     },[data])
 
     /*
@@ -103,7 +100,6 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
             if(limitedData.length > 0){
                 setCoinsCardData((prevData) => [ ...prevData, ...limitedData ]);
             }
-
         }
 
         // bu yapının modal açılıp arama yaptığında çalışmasını sağlar
@@ -230,7 +226,10 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         if(searchCoin){
             const updateData: {
                 symbol: string,
-                data: object
+                data: {
+                    count: number,
+                    has_in_redux: boolean
+                }
             } = {
                 symbol: symbol,
                 data: {
@@ -269,7 +268,9 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
 
         const updateData: {
             symbol: string,
-            data: object
+            data: {
+                count: number
+            }
         } = {
             symbol: symbol,
             data: {
