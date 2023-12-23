@@ -91,7 +91,6 @@ function App() {
                     const filteredSearchCoins = getCoins.filter((coin) =>
                         coin.symbol.toLowerCase().includes(inputValue.toLowerCase())
                     );
-                    console.log(filteredSearchCoins)
 
                     const updatedSearchCoins = filteredSearchCoins.map(searchCoin => {
                     const localCoin = coinData.find(localCoin => localCoin.symbol === searchCoin.symbol);
