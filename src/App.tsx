@@ -261,10 +261,10 @@ function App() {
     }
 
     return (
-      <Container
-        maxWidth='xl'
-      >
+      <Container maxWidth='xl'>
+        {/* Üst buttonlar ve modal alanı  */}
           <Grid container spacing={3}>
+             {/* Üst Buttonlar  */}
               <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
                   <Box sx={boxInHome}>
                       <Button 
@@ -285,6 +285,7 @@ function App() {
                       </Button>
                   </Box>
               </Grid>
+              {/* Search Modal */}
               <Modal
                   open={open}
                   onClose={handleModal}
@@ -322,12 +323,15 @@ function App() {
                 </Box>
               </Modal>
           </Grid>
+        {/* Portföy ve Chart Alanı  */}
           <Grid container spacing={3}>
+              {/* Portföy alanı */}
               <Grid item xl={6} lg={6} md={12} sm={12}>
                   <Suspense fallback={<CoinsLoader />}>
                         {coinData && <Coins data={coinData} searchCoin={false} targetRef={targetRef} /> }
                     </Suspense>
               </Grid>
+               {/* Chart alanı */}
               <Grid item xl={6} lg={6} md={12} sm={12}>
                 <PieChart width={800} height={600} className='letgo-charts-div'>
                     <Pie

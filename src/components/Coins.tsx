@@ -356,92 +356,94 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
          {coinsCardData.length > 0 && coinsCardData.map((item: coinsCardType, key: number) => (
             <Grid item xl={12} lg={12} md={12} sm={12} xs={12} key={key}>
                 <Card sx={card}>
-                <CardContent sx={cardContent}>
-                    <Grid container spacing={1}>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            {searchCoin ? (
-                                <Box>
-                                    <Typography sx={cardTypographyForAdd} color="text.secondary">
-                                            {item.symbol}  - {item.lastPrice}
-                                    </Typography>
-                                </Box>
-                            ): (
-                                <Box>
-                                    <Typography variant="h6" component="div">
-                                            {item.symbol}
-                                    </Typography>
-                                    <Typography sx={cardTypographyForUpdateAndRemove} color="text.secondary">
-                                            {item.lastPrice}  - {item.weightedAvgPrice}
-                                    </Typography>
-                                </Box>
-                            )}
-                            
-                        </Grid>
-                        <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
-                            <Grid container>
-                                <Grid item xl={6} lg={6} md={6} sm={2} xs={2}>
-                                    <Box sx={cardBoxSearch}>
-                                        <TextField
-                                            id="outlined-number"
-                                            type="number"
-                                            InputLabelProps={{
-                                                shrink: true
-                                            }}
-                                            InputProps={{
-                                                inputProps: { 
-                                                    max: 100, min: 1
-                                                },
-                                                sx:{ height: '1.8em'}
-                                            }}
-                                            size='small'
-                                            value={counts[item.symbol]}
-                                            defaultValue={!(item.has_in_redux) ? 1 : item.count}
-                                            onChange={(e) => handleCountChange(item.symbol, e.target.value)}
-                                        />
+                    <CardContent sx={cardContent}>
+                        <Grid container spacing={1}>
+                            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+                                 {/* Coin bilgi alanı */}
+                                {searchCoin ? (
+                                    <Box>
+                                        <Typography sx={cardTypographyForAdd} color="text.secondary">
+                                                {item.symbol}  - {item.lastPrice}
+                                        </Typography>
                                     </Box>
-                                </Grid>
-                                <Grid item xl={6} lg={6} md={6} sm={10} xs={10}>
-                                    {!(item.has_in_redux) ? (
-                                        <Box sx={cardBoxButton}>
-                                            <Button 
-                                                variant="contained" 
-                                                type='submit'
-                                                sx={cardAddButton}
-                                                size="large"
-                                                onClick={() => handleAddCoin(item.symbol)}
-                                            >
-                                                Add
-                                            </Button>
+                                ): (
+                                    <Box>
+                                        <Typography variant="h6" component="div">
+                                                {item.symbol}
+                                        </Typography>
+                                        <Typography sx={cardTypographyForUpdateAndRemove} color="text.secondary">
+                                                {item.lastPrice}  - {item.weightedAvgPrice}
+                                        </Typography>
+                                    </Box>
+                                )}
+                            </Grid>
+                            <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
+                                <Grid container>
+                                    {/* Coin adet belirleme alanı */}
+                                    <Grid item xl={6} lg={6} md={6} sm={2} xs={2}>
+                                        <Box sx={cardBoxSearch}>
+                                            <TextField
+                                                id="outlined-number"
+                                                type="number"
+                                                InputLabelProps={{
+                                                    shrink: true
+                                                }}
+                                                InputProps={{
+                                                    inputProps: { 
+                                                        max: 100, min: 1
+                                                    },
+                                                    sx:{ height: '1.8em'}
+                                                }}
+                                                size='small'
+                                                value={counts[item.symbol]}
+                                                defaultValue={!(item.has_in_redux) ? 1 : item.count}
+                                                onChange={(e) => handleCountChange(item.symbol, e.target.value)}
+                                            />
                                         </Box>
-                                    ): (
-                                        <Box sx={cardBoxButton}>
-                                            <Button 
-                                                variant="contained" 
-                                                type='submit'
-                                                sx={cardUpdateAndRemoveButton}
-                                                size="small"
-                                                color="success"
-                                                onClick={() => handleUpdateCoin(item.symbol)}
-                                            >
-                                                update
-                                            </Button>
-                                            <Button 
-                                                variant="contained" 
-                                                type='submit'
-                                                sx={cardUpdateAndRemoveButton}
-                                                size="small"
-                                                color="error"
-                                                onClick={() => handleRemoveCoin(item.symbol)}
-                                            >
-                                                remove
-                                            </Button>
-                                        </Box>
-                                    )}
+                                    </Grid>
+                                     {/* Sağ taraf button alanı */}
+                                    <Grid item xl={6} lg={6} md={6} sm={10} xs={10}>
+                                        {!(item.has_in_redux) ? (
+                                            <Box sx={cardBoxButton}>
+                                                <Button 
+                                                    variant="contained" 
+                                                    type='submit'
+                                                    sx={cardAddButton}
+                                                    size="large"
+                                                    onClick={() => handleAddCoin(item.symbol)}
+                                                >
+                                                    Add
+                                                </Button>
+                                            </Box>
+                                        ): (
+                                            <Box sx={cardBoxButton}>
+                                                <Button 
+                                                    variant="contained" 
+                                                    type='submit'
+                                                    sx={cardUpdateAndRemoveButton}
+                                                    size="small"
+                                                    color="success"
+                                                    onClick={() => handleUpdateCoin(item.symbol)}
+                                                >
+                                                    update
+                                                </Button>
+                                                <Button 
+                                                    variant="contained" 
+                                                    type='submit'
+                                                    sx={cardUpdateAndRemoveButton}
+                                                    size="small"
+                                                    color="error"
+                                                    onClick={() => handleRemoveCoin(item.symbol)}
+                                                >
+                                                    remove
+                                                </Button>
+                                            </Box>
+                                        )}
+                                    </Grid>
                                 </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
-                </CardContent>
+                    </CardContent>
                 </Card>
             </Grid>
         ))}
