@@ -33,7 +33,6 @@ function App() {
     const [getCoins, setGetCoins] = useState<object[]>([]);
 
     const [inputValue, setInputValue] = useState<string>('');
-    const [typingTimeout, setTypingTimeout] = useState(null);
     const [searchCoins, setSearchCoins] = useState<object[]>([]);
 
     //--------- UseRef area --------------
@@ -139,17 +138,13 @@ function App() {
 
 
     //  Modal'daki search butonu için anlık olarak yazılan verisini alıp inputValue içinde yazar
-    const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
 
-        if(typingTimeout){
-          clearTimeout(typingTimeout);
-        }
-
-        setTypingTimeout(setTimeout(() => {
+        if (/^[a-zA-Z]*$/.test(inputValue)) 
+        {
           setInputValue(inputValue);
-        }, 1000) as any);
-
+        }
     };
 
     /*
@@ -300,6 +295,7 @@ function App() {
                             name="search"
                             placeholder='Search'
                             onChange={handleInputChange}
+                            value={inputValue}
                           />
                       </Grid>
                   </Grid>
