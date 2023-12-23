@@ -98,8 +98,8 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         const fetchData = () => {
             const startIndex = (pageNumber - 1) * pageSize;
             const endIndex = startIndex + pageSize;
-            const limitedData = data.length % pageSize ? data.slice(startIndex, endIndex) : data
-           
+            const limitedData = data.slice(startIndex, endIndex);
+        
             if(limitedData.length > 0){
                 setCoinsCardData((prevData) => [ ...prevData, ...limitedData ]);
             }
