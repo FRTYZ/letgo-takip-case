@@ -202,7 +202,6 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
             dispatch(setCoinData(filteredCoinTwin)) 
 
             setCoinsCardData(prevObjects => {
-
                 return prevObjects.map(obj => {
                   if (obj?.symbol === symbolName) {
                     return { ...obj, has_in_redux: true, count: Number(count)  }
@@ -265,7 +264,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
     const handleUpdateCoin = (symbolName: string) => {
         const symbol: string = symbolName;
         const value: number = counts[symbol];
-
+        
         const updateData: {
             symbol: string,
             data: {
