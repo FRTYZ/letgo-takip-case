@@ -15,7 +15,7 @@ import { setCoinData, removeCoinBySymbol, updateCoinData } from '../redux/store'
 import { useSelector, useDispatch } from "react-redux";
 
 interface CoinsAreaProps {
-    data: object[] | object,
+    data: object[],
     searchCoin: boolean,
     targetRef: React.RefObject<HTMLDivElement>;
 }
@@ -25,7 +25,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
     const {coinData} = useSelector((state) => state.coinStorage);
 
     const [coinsCardData, setCoinsCardData] = useState<object[]>([]);
-    const [counts, setCounts] = useState<object | object[]>({});
+    const [counts, setCounts] = useState<object>({});
     const [pageNumber, setPageNumber] = useState(1);
     const pageSize = 10; // Her sayfada gösterilecek öğe sayısı
 
@@ -164,15 +164,24 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         -searchCoins state'te tutulan dizi içinde coinlerin, kullanıcının tıklanınılan sembolün ismini alır.
         bu ism ise counts state'inde arayıp count değerini alır
     */
-    const handleAddCoin = (symbol: string) => {
-        const count = counts[symbol] ? counts[symbol] : 1;
-       
-        const filteredCoin = data.find((coin) =>
-            coin.symbol.includes(symbol)
-        );
+    const handleAddCoin = (symbolName: string) => {
+        const count: number = Object.keys(counts).includes(symbolName) ? counts[symbolName] : 1
+
+        interface filteredCoinTypes {
+            symbol: string,
+            count: number,
+            has_in_redux: boolean
+        }
+
+        type FilteredCoinDefine = Partial<filteredCoinTypes>
+
+        const filteredCoin = data.find((coin) => (
+            coin?.symbol.includes(symbolName)
+
+        )) as FilteredCoinDefine;
 
         if(filteredCoin){
-            const filteredCoinTwin = {...filteredCoin}
+            const filteredCoinTwin: FilteredCoinDefine = {...filteredCoin}
 
             filteredCoinTwin['count'] = Number(count)
            
@@ -183,8 +192,9 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
             dispatch(setCoinData(filteredCoinTwin)) 
 
             setCoinsCardData(prevObjects => {
+
                 return prevObjects.map(obj => {
-                  if (obj.symbol === symbol) {
+                  if (obj?.symbol === symbolName) {
                     return { ...obj, has_in_redux: true, count: Number(count)  }
                   }
                   return obj;
