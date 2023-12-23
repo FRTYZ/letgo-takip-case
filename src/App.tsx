@@ -75,7 +75,6 @@ function App() {
         }
     },[coinData])
 
-
     /*
       -search inputunda data gelince çalışıyor
 

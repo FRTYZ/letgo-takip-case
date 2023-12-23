@@ -279,10 +279,19 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
 
         dispatch(updateCoinData(updateData));
     }
-    
+
+    // Card component tip tanımlaması
+    type CoinsCardType = {
+        symbol?: string,
+        lastPrice?: number,
+        weightedAvgPrice?: number,
+        has_in_redux?: boolean,
+        count?:number
+    }
+
   return (
     <>
-         {coinsCardData.length > 0 && coinsCardData.map((item,key) => (
+         {coinsCardData.length > 0 && coinsCardData.map((item: CoinsCardType, key: number) => (
             <Grid item xl={12} lg={12} md={12} sm={12} xs={12} key={key}>
                 <Card 
                 sx={{
@@ -385,7 +394,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                                         '&:hover': {backgroundColor: '#17A948'}
                                                     }}
                                                     size="small"
-                                                    onClick={() => handleUpdateCoin(item.symbol, )}
+                                                    onClick={() => handleUpdateCoin(item.symbol)}
                                                     >
                                                     update
                                                 </Button>
