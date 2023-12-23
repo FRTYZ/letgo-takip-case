@@ -281,8 +281,69 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         dispatch(updateCoinData(updateData));
     }
 
+
+     //--------- Material UI area --------------
+    const card = {
+        minWidth: 275,
+        boxShadow: '0 1px 3px 0 rgba(0,47,52,.2), 0 1px 3px 0 rgba(0,47,52,.2)',
+        borderLeft: searchCoin ? '4px solid #004bbe' : '4px solid #00C49F',
+        marginBottom: '20px',
+        paddingBottom: 0
+    }
+
+    const cardContent = { 
+        padding: {
+            lg: '15px 20px 15px 20px !important', 
+            xl: '15px 20px 15px 20px !important', 
+            md: '15px 20px 15px 20px !important', 
+            xs: '20px 20px 20px 20px !important' 
+        }
+    }
+
+    const cardTypographyForAdd = { 
+        pt:0.8,
+        paddingBottom: {
+            lg: 0, 
+            xl: 0, 
+            md: 0, 
+            xs: 6 
+         }
+    }
+
+    const cardTypographyForUpdateAndRemove = {
+         pt: 1 
+    }
+
+    const cardBoxSearch = {
+        marginTop: searchCoin ? '4px' : '20px'
+    }
+
+    const cardAddButton = {
+        backgroundColor: 'palette.text.primary',
+        color: '#ffffff',
+        textTransform: 'none',
+        fontWeight: 400,
+        fontSize: '12px',
+        padding: '8px 62px 8px 62px',
+        marginRight: '5px',
+    }
+    
+    const cardBoxButton = { 
+        float: 'right',
+        marginTop: searchCoin ? '0' : '12px'
+    }
+
+    const cardUpdateAndRemoveButton = {
+        color: '#ffffff',
+        marginRight: '5px',
+        textTransform: 'none',
+        fontWeight: 400,
+        fontSize: '12px',
+        padding: '8px 15px 8px 15px'
+    }
+
     // Card component tip tanımlaması
-    type CoinsCardType = {
+    type coinsCardType = {
         symbol?: string,
         lastPrice?: number,
         weightedAvgPrice?: number,
@@ -292,30 +353,15 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
     
   return (
     <>
-         {coinsCardData.length > 0 && coinsCardData.map((item: CoinsCardType, key: number) => (
+         {coinsCardData.length > 0 && coinsCardData.map((item: coinsCardType, key: number) => (
             <Grid item xl={12} lg={12} md={12} sm={12} xs={12} key={key}>
-                <Card 
-                sx={{
-                    minWidth: 275,
-                    boxShadow: '0 1px 3px 0 rgba(0,47,52,.2), 0 1px 3px 0 rgba(0,47,52,.2)',
-                    borderLeft: searchCoin ? '4px solid #004bbe' : '4px solid #00C49F',
-                    marginBottom: '20px',
-                    paddingBottom: 0
-                }}
-                >
-                <CardContent sx={{ 
-                    padding: {
-                        lg: '15px 20px 10px 20px !important', 
-                        xl: '15px 20px 10px 20px !important', 
-                        md: '15px 20px 10px 20px !important', 
-                        xs:'20px 20px 20px 20px !important' 
-                    }}}
-                >
+                <Card sx={card}>
+                <CardContent sx={cardContent}>
                     <Grid container spacing={1}>
                         <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
                             {searchCoin ? (
                                 <Box>
-                                    <Typography sx={{ pt:0.7 }} color="text.secondary">
+                                    <Typography sx={cardTypographyForAdd} color="text.secondary">
                                             {item.symbol}  - {item.lastPrice}
                                     </Typography>
                                 </Box>
@@ -324,7 +370,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                     <Typography variant="h6" component="div">
                                             {item.symbol}
                                     </Typography>
-                                    <Typography sx={{ pt: 1 }} color="text.secondary">
+                                    <Typography sx={cardTypographyForUpdateAndRemove} color="text.secondary">
                                             {item.lastPrice}  - {item.weightedAvgPrice}
                                     </Typography>
                                 </Box>
@@ -334,7 +380,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                         <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
                             <Grid container>
                                 <Grid item xl={6} lg={6} md={6} sm={2} xs={2}>
-                                    <Box sx={{ marginTop: searchCoin ? '4px' : '20px'  }}>
+                                    <Box sx={cardBoxSearch}>
                                         <TextField
                                             id="outlined-number"
                                             type="number"
@@ -345,7 +391,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                                 inputProps: { 
                                                     max: 100, min: 1
                                                 },
-                                                sx:{height: '1.8em'}
+                                                sx:{ height: '1.8em'}
                                             }}
                                             size='small'
                                             value={counts[item.symbol]}
@@ -356,64 +402,39 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                 </Grid>
                                 <Grid item xl={6} lg={6} md={6} sm={10} xs={10}>
                                     {!(item.has_in_redux) ? (
-                                        <Box sx={{ float:'right' }}>
+                                        <Box sx={cardBoxButton}>
                                             <Button 
                                                 variant="contained" 
                                                 type='submit'
-                                                sx={{
-                                                    backgroundColor: 'palette.text.primary',
-                                                    color: '#ffffff',
-                                                    textTransform: 'none',
-                                                    fontWeight: 400,
-                                                    fontSize: '12px',
-                                                    padding: '8px 62px 8px 62px',
-                                                }}
+                                                sx={cardAddButton}
                                                 size="large"
                                                 onClick={() => handleAddCoin(item.symbol)}
-                                                >
+                                            >
                                                 Add
                                             </Button>
                                         </Box>
                                     ): (
-                                        <Box 
-                                            sx={{ 
-                                                float: 'right',
-                                                marginTop: searchCoin ? '0' : '12px'
-                                            }}
-                                        >
-                                                <Button 
-                                                    variant="contained" 
-                                                    type='submit'
-                                                    sx={{
-                                                        color: '#ffffff',
-                                                        marginRight: '5px',
-                                                        textTransform: 'none',
-                                                        fontWeight: 400,
-                                                        fontSize: '12px',
-                                                        padding: '8px 15px 8px 15px'
-                                                    }}
-                                                    size="small"
-                                                    color="success"
-                                                    onClick={() => handleUpdateCoin(item.symbol)}
-                                                    >
-                                                    update
-                                                </Button>
-                                                <Button 
-                                                    variant="contained" 
-                                                    type='submit'
-                                                    sx={{
-                                                        color: '#ffffff',
-                                                        fontWeight: 400,
-                                                        textTransform: 'none',
-                                                        fontSize: '12px',
-                                                        padding: '8px 15px 8px 15px'
-                                                    }}
-                                                    size="small"
-                                                    color="error"
-                                                    onClick={() => handleRemoveCoin(item.symbol)}
-                                                >
-                                                    remove
-                                                </Button>
+                                        <Box sx={cardBoxButton}>
+                                            <Button 
+                                                variant="contained" 
+                                                type='submit'
+                                                sx={cardUpdateAndRemoveButton}
+                                                size="small"
+                                                color="success"
+                                                onClick={() => handleUpdateCoin(item.symbol)}
+                                            >
+                                                update
+                                            </Button>
+                                            <Button 
+                                                variant="contained" 
+                                                type='submit'
+                                                sx={cardUpdateAndRemoveButton}
+                                                size="small"
+                                                color="error"
+                                                onClick={() => handleRemoveCoin(item.symbol)}
+                                            >
+                                                remove
+                                            </Button>
                                         </Box>
                                     )}
                                 </Grid>

@@ -229,42 +229,55 @@ function App() {
         );
     };
 
+     //--------- Material UI area --------------
+
+    const boxInHome = { 
+        marginTop: '50px',
+        marginBottom: '80px',
+        textAlign: { lg: 'left' ,md: 'left' ,sm: 'center', xs: 'center' }
+    }
+
+    const boxInModal = {
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: { xl: '800px', lg: '800px', md: '95%', sm: '95%', xs: '95%' },
+          bgcolor: 'background.paper',
+          border: '2px solid #000',
+          boxShadow: 24,
+          overflow: 'scroll',
+          display: 'block',
+          height: '80%',
+          p: 4,
+    }
+
+    const buttonInTop = {
+        marginRight:'35px',
+        fontWeight: 300,
+        fontSize: '11px',
+        padding: '15px 41px 16px 41px',
+        textTransform: 'none'
+    }
+
     return (
       <Container
         maxWidth='xl'
       >
           <Grid container spacing={3}>
               <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-                  <Box 
-                      sx={{ 
-                        marginTop: '50px',
-                        marginBottom: '80px',
-                        textAlign: { lg: 'left' ,md: 'left' ,sm: 'center', xs: 'center' }
-                      }}
-                  >
+                  <Box sx={boxInHome}>
                       <Button 
                           variant="contained"
                           onClick={handleModal}
-                          sx={{
-                              marginRight:'35px',
-                              fontWeight: 300,
-                              fontSize: '11px',
-                              padding: '15px 41px 16px 41px',
-                              textTransform: 'none'
-                          }}
+                          sx={buttonInTop}
                           color='primary'
                         > 
                           {coinData.length > 0 ? 'Add / Update' : 'Add Stock'}
                       </Button>
                       <Button 
                           variant="contained"
-                          sx={{
-                              marginRight:'15px',
-                              fontWeight: 300,
-                              fontSize: '11px',
-                              padding: '15px 41px 16px 41px',
-                              textTransform: 'none'
-                          }}
+                          sx={buttonInTop}
                           color='primary'
                           onClick={() => handleRefresh()}
                         > 
@@ -278,22 +291,7 @@ function App() {
                   aria-labelledby="modal-modal-title"
                   aria-describedby="modal-modal-description"
               >
-                <Box
-                    sx={{
-                      position: 'absolute',
-                      top: '50%',
-                      left: '50%',
-                      transform: 'translate(-50%, -50%)',
-                      width: { xl: '800px', lg: '800px', md: '95%', sm: '95%', xs: '95%' },
-                      bgcolor: 'background.paper',
-                      border: '2px solid #000',
-                      boxShadow: 24,
-                      overflow: 'scroll',
-                      display: 'block',
-                      height: '80%',
-                      p: 4,
-                  }}
-                >
+                <Box sx={boxInModal}>
                   <Grid container spacing={3}>
                       <Grid item lg={12} md={12} sm={12} xs={12} sx={{ marginBottom: '40px' }}>
                           <TextField
@@ -314,7 +312,7 @@ function App() {
                           </Suspense>
                       </Grid>
                   </Grid>
-                  <Grid container spacing={3} sx={{ marginBottom: '20px' }}>
+                  <Grid container>
                       <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
                           <div ref={targetRef}>
                               {/* Intersection Observer'ın gözlemlediği gizli bir hedef element */}
@@ -343,7 +341,7 @@ function App() {
                       dataKey="value"
                     >
                       {chartData.length > 0 && chartData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                          <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
                     <Tooltip />
