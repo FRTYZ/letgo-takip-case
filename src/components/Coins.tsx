@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, IntersectionObserverEntry} from 'react';
 
 import { 
     Grid, 
@@ -16,26 +16,100 @@ import { useSelector, useDispatch } from "react-redux";
 
 interface CoinsAreaProps {
     data: object[] | object,
-    searchCoin: boolean
+    searchCoin: boolean,
+    targetRef: React.RefObject<HTMLDivElement>;
 }
 
-const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin }) => {
+const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
     const dispatch = useDispatch();
-    
     const {coinData} = useSelector((state) => state.coinStorage);
 
-    const [coinsCardData, setCoinsCardData] = useState<object[] | object>([]);
+    const [coinsCardData, setCoinsCardData] = useState<object[]>([]);
     const [counts, setCounts] = useState<object | object[]>({});
+    const [pageNumber, setPageNumber] = useState(1);
+    const pageSize = 10; // Her sayfada gösterilecek öğe sayısı
 
     // Propstan gelen data veri geldiği zamanda çalışır
     useEffect(() => {
-        setCoinsCardData(data)
+
+        // arama yaptığında ilk 10 verileri almasını sağlıyor
+        if(searchCoin){
+            setCoinsCardData(Array.isArray(data) ? data.slice(0, pageSize) : []);
+        }
+        else{
+            // portföydeki verileri temsil eder.
+            setCoinsCardData(data)
+        } 
+
     },[data])
+
+    /*
+       -IntersectionObserver ile modalı takip edip, modal aşağıya indikçe sayfa numarası arttırır
+       buradaki pageNumber alınıp, bi aşağıdaki useEffect'te kullanılıyor
+    */
+    useEffect(() => {      
+        if(targetRef?.current && searchCoin){
+            /* 
+               Modalın sonunda görünür hale geldiğini isIntersecting ile true false değeri vermesi ile belirtir
+               True olduğu durumda pageNumber sayısını arttırır
+            */
+            const handleIntersection: IntersectionObserverCallback = (entries: IntersectionObserverEntry[]) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setPageNumber((prev) => prev + 1)
+                    }
+                });
+            };
+            
+            // modalı takip etmek için bazı ayarlar
+            const options: IntersectionObserverInit = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5,
+            };
+            
+            /*  modalı IntersectionObserver fonksiyonu ile takip edeceğiz
+                işlemleri yönetmek için handleIntersection kullanılıyor.
+            */
+            const observer = new IntersectionObserver(handleIntersection, options);
+        
+            if (targetRef.current) {
+                observer.observe(targetRef.current);
+            }
+        
+            return () => {
+                if (targetRef.current) {
+                    observer.unobserve(targetRef.current);
+                }
+            };
+        }
+        
+    }, [targetRef, data]);
+  
+    // bi üstteki useEffect ile arttırılan pageNumber takip eder 
+    useEffect(() => {
+
+        // arttırılan pageNumber alınıp bununla slice ile bölünüp verileri set eder.
+        const fetchData = () => {
+            const startIndex = (pageNumber - 1) * pageSize;
+            const endIndex = startIndex + pageSize;
+            const limitedData = data.slice(startIndex, endIndex);
+        
+            if(limitedData.length > 0){
+                setCoinsCardData((prevData) => [...prevData, ...limitedData]);
+            }
+        }
+
+        // bu yapının modal açılıp arama yaptığında çalışmasını sağlar
+        if(searchCoin){
+            fetchData()
+        }
+        
+      },[pageNumber])
 
     // counts verilerini reduxtan alıp counts stateini günceller
     useEffect(() => {
         const getCurrentCoins = () => {
-
             if(coinData.length > 0) {
                 const result = {};
 
@@ -92,22 +166,29 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin }) => {
     */
     const handleAddCoin = (symbol: string) => {
         const count = counts[symbol] ? counts[symbol] : 1;
- 
-        let filteredCoin = data.find((coin) =>
+       
+        const filteredCoin = data.find((coin) =>
             coin.symbol.includes(symbol)
         );
-        
+
         if(filteredCoin){
-            filteredCoin['count'] = Number(count);
+            const filteredCoinTwin = {...filteredCoin}
 
+            filteredCoinTwin['count'] = Number(count)
+           
             if(searchCoin){
-                filteredCoin['has_in_redux'] = true
+                filteredCoinTwin['has_in_redux'] = true
             }
+           
+            dispatch(setCoinData(filteredCoinTwin)) 
 
-            dispatch(setCoinData(filteredCoin)) 
-
-            setCoinsCardData((prev: object[]) =>  {
-                return [...prev, filteredCoin]
+            setCoinsCardData(prevObjects => {
+                return prevObjects.map(obj => {
+                  if (obj.symbol === symbol) {
+                    return { ...obj, has_in_redux: true, count: Number(count)  }
+                  }
+                  return obj;
+                })
             })
         }
     };
@@ -139,6 +220,15 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin }) => {
                 ...prevCounts,
                 [symbol]: 1,
             }));
+
+            setCoinsCardData(prevObjects => {
+                return prevObjects.map(obj => {
+                  if (obj.symbol === symbol) {
+                    return { ...obj, has_in_redux: false, count: 1 }
+                  }
+                  return obj;
+                })
+            })
             
         }
     }

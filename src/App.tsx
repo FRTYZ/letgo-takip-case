@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from 'react'
+import { useEffect, useState, lazy, Suspense, useRef } from 'react'
 import './App.css'
 
 import { 
@@ -7,10 +7,7 @@ import {
     Button, 
     Box,
     Modal,
-    TextField,
-    Card,
-    CardContent,
-    Typography
+    TextField
   } 
   from '@mui/material';
 
@@ -19,6 +16,7 @@ import { PieChart, Pie, Cell, Tooltip } from "recharts";
 import { updateCoinData } from './redux/store';
 import { useSelector, useDispatch } from "react-redux";
 
+import CoinsLoader from './components/CoinsLoader';
 const Coins = lazy(() => import('./components/Coins'));
 
 function App() {
@@ -41,6 +39,7 @@ function App() {
     const [inputValue, setInputValue] = useState<string>('');
     const [typingTimeout, setTypingTimeout] = useState(null);
     const [searchCoins, setSearchCoins] = useState<object[]>([]);
+    const targetRef = useRef<HTMLDivElement>(null);
 
     /*
         -Binance'ten güncel api verilerini alır.
@@ -92,6 +91,7 @@ function App() {
                     const filteredSearchCoins = getCoins.filter((coin) =>
                         coin.symbol.toLowerCase().includes(inputValue.toLowerCase())
                     );
+                    console.log(filteredSearchCoins)
 
                     const updatedSearchCoins = filteredSearchCoins.map(searchCoin => {
                     const localCoin = coinData.find(localCoin => localCoin.symbol === searchCoin.symbol);
@@ -102,14 +102,14 @@ function App() {
                     }  
                         return { ...searchCoin, count: 1, has_in_redux: false };
                     });
-                  
                     setSearchCoins(updatedSearchCoins);
               }
 
               searchCoin();
         }
 
-    }, [inputValue, coinData]);
+    }, [inputValue, targetRef?.current]);
+
 
     // 5dk bir güncelleme sağlıyor
     useEffect(() => {
@@ -241,7 +241,7 @@ function App() {
                               textTransform: 'none'
                           }}
                           onClick={() => handleRefresh()}
-                        >
+                        > 
                           Refresh
                       </Button>
                   </Box>
@@ -251,47 +251,57 @@ function App() {
                   onClose={handleModal}
                   aria-labelledby="modal-modal-title"
                   aria-describedby="modal-modal-description"
+              >
+                <Box
+                    sx={{
+                      position: 'absolute',
+                      top: '50%',
+                      left: '50%',
+                      transform: 'translate(-50%, -50%)',
+                      width: { xl: '800px', lg: '800px', md: '95%', sm: '95%', xs: '95%' },
+                      bgcolor: 'background.paper',
+                      border: '2px solid #000',
+                      boxShadow: 24,
+                      overflow: 'scroll',
+                      display: 'block',
+                      height: '80%',
+                      p: 4,
+                  }}
                 >
-                  <Box sx={{
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        width: { xl: '800px', lg: '800px', md: '95%', sm: '95%', xs: '95%'  },
-                        bgcolor: 'background.paper',
-                        border: '2px solid #000',
-                        boxShadow: 24,
-                        overflow: 'scroll',
-                        display: 'block',
-                        height: '80%',
-                        p: 4,
-                  }}>
-                      <Grid container spacing={3}>
-                          <Grid item lg={12} md={12} sm={12} xs={12} sx={{ marginBottom: '40px' }}>
-                                <TextField
-                                    fullWidth
-                                    size='small'
-                                    id="search"
-                                    name="search"
-                                    placeholder='Search'
-                                    onChange={handleInputChange}
-                                />
-                          </Grid>
+                  <Grid container spacing={3}>
+                      <Grid item lg={12} md={12} sm={12} xs={12} sx={{ marginBottom: '40px' }}>
+                          <TextField
+                            fullWidth
+                            size='small'
+                            id="search"
+                            name="search"
+                            placeholder='Search'
+                            onChange={handleInputChange}
+                          />
                       </Grid>
-                      <Grid container spacing={3} sx={{ marginBottom: '20px' }}>
-                          <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
-                            <Suspense fallback={<div>isLoading</div>}>
-                                <Coins data={searchCoins} searchCoin={true} />
-                            </Suspense>
-                          </Grid>
+                  </Grid>
+                  <Grid container spacing={3} sx={{ marginBottom: '20px' }}>
+                      <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                          <Suspense fallback={<CoinsLoader />}>
+                              <Coins data={searchCoins} searchCoin={true} targetRef={targetRef} />
+                          </Suspense>
                       </Grid>
-                  </Box>
+                  </Grid>
+
+                  <Grid container spacing={3} sx={{ marginBottom: '20px' }}>
+                      <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
+                          <div ref={targetRef}>
+                              {/* Intersection Observer'ın gözlemlediği gizli bir hedef element */}
+                          </div>
+                      </Grid>
+                  </Grid>
+                </Box>
               </Modal>
           </Grid>
           <Grid container spacing={3}>
               <Grid item xl={8} lg={8} md={12} sm={12}>
-                  <Suspense fallback={<div>isLoading</div>}>
-                        {coinData && <Coins data={coinData} searchCoin={false} /> }
+                  <Suspense fallback={<CoinsLoader />}>
+                        {coinData && <Coins data={coinData} searchCoin={false} targetRef={targetRef} /> }
                     </Suspense>
               </Grid>
               <Grid item xl={4} lg={4} md={12} sm={12}>
