@@ -27,7 +27,7 @@ function App() {
 
     //--------- UseState area --------------
 
-    const [chartData, setChartData] = useState<object[]>([]);
+    const [chartData, setChartData] = useState<{name: string, value: number}[]>([]);
     
     const [open, setOpen] = useState<boolean>(false);
     const [getCoins, setGetCoins] = useState<object[]>([]);
@@ -59,14 +59,14 @@ function App() {
     useEffect(() => {
         if(coinData.length > 0){
             const newData = coinData.map(item => ({
-              name: item.symbol,
-              value: Number(item.count)
+                name: item.symbol,
+                value: Number(item.count)
             }));
 
             setChartData(newData);
         }
         else{
-            const defualtChartData: object[] =  [{
+            const defualtChartData: {name: string, value: number}[] =  [{
                 name: 'default',
                 value: 1
             }];
@@ -167,10 +167,10 @@ function App() {
               )
 
               const newData: {
-                  symbol: string | undefined,
+                  symbol?: string,
                   data: {
-                    weightedAvgPrice: number,
-                    lastPrice: number
+                    weightedAvgPrice?: number,
+                    lastPrice?: number
                   }
               } = {
                   symbol: item.symbol,
@@ -183,8 +183,8 @@ function App() {
               dispatch(updateCoinData(newData));
 
               const refreshChartData: {
-                  name: string | undefined,
-                  value: number
+                  name?: string,
+                  value?: number
               } = {
                   name: item.symbol,
                   value: Number(item.count)
