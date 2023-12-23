@@ -122,7 +122,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                     const { symbol, count } = item;
                     result[symbol] = count
                 })
-                
+
                 /* kullanıcı önceden count değiştirdiği coin varsa onlarla beraber
                     reduxtaki count verilerle günceller
                 */
@@ -135,7 +135,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
 
         getCurrentCoinCounts();
 
-    },[data])
+    },[coinData])
 
     //--------- Function Area --------------
 
