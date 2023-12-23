@@ -289,7 +289,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         has_in_redux?: boolean,
         count?:number
     }
-
+    
   return (
     <>
          {coinsCardData.length > 0 && coinsCardData.map((item: CoinsCardType, key: number) => (
@@ -304,13 +304,13 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                 }}
                 >
                 <CardContent sx={{ 
-                        padding: {
-                            lg: '15px 20px 10px 20px !important', 
-                            xl: '15px 20px 10px 20px !important', 
-                            md: '15px 20px 10px 20px !important', 
-                            xs:'20px 20px 20px 20px !important' }, 
-                            
-                        }}>
+                    padding: {
+                        lg: '15px 20px 10px 20px !important', 
+                        xl: '15px 20px 10px 20px !important', 
+                        md: '15px 20px 10px 20px !important', 
+                        xs:'20px 20px 20px 20px !important' 
+                    }}}
+                >
                     <Grid container spacing={1}>
                         <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
                             {searchCoin ? (
@@ -361,7 +361,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                                 variant="contained" 
                                                 type='submit'
                                                 sx={{
-                                                    backgroundColor: '#1C49D0',
+                                                    backgroundColor: 'palette.text.primary',
                                                     color: '#ffffff',
                                                     textTransform: 'none',
                                                     fontWeight: 400,
@@ -385,16 +385,15 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                                     variant="contained" 
                                                     type='submit'
                                                     sx={{
-                                                        backgroundColor: '#17A948',
                                                         color: '#ffffff',
                                                         marginRight: '5px',
                                                         textTransform: 'none',
                                                         fontWeight: 400,
                                                         fontSize: '12px',
-                                                        padding: '8px 15px 8px 15px',
-                                                        '&:hover': {backgroundColor: '#17A948'}
+                                                        padding: '8px 15px 8px 15px'
                                                     }}
                                                     size="small"
+                                                    color="success"
                                                     onClick={() => handleUpdateCoin(item.symbol)}
                                                     >
                                                     update
@@ -403,15 +402,14 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                                     variant="contained" 
                                                     type='submit'
                                                     sx={{
-                                                        backgroundColor: '#C12126',
                                                         color: '#ffffff',
                                                         fontWeight: 400,
                                                         textTransform: 'none',
                                                         fontSize: '12px',
-                                                        padding: '8px 15px 8px 15px',
-                                                        '&:hover': {backgroundColor: '#C12126'}
+                                                        padding: '8px 15px 8px 15px'
                                                     }}
                                                     size="small"
+                                                    color="error"
                                                     onClick={() => handleRemoveCoin(item.symbol)}
                                                 >
                                                     remove

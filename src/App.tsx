@@ -250,9 +250,9 @@ function App() {
                               fontWeight: 300,
                               fontSize: '11px',
                               padding: '15px 41px 16px 41px',
-                              backgroundColor: '#1C49D0',
                               textTransform: 'none'
                           }}
+                          color='primary'
                         > 
                           {coinData.length > 0 ? 'Add / Update' : 'Add Stock'}
                       </Button>
@@ -263,9 +263,9 @@ function App() {
                               fontWeight: 300,
                               fontSize: '11px',
                               padding: '15px 41px 16px 41px',
-                              backgroundColor: '#1C49D0',
                               textTransform: 'none'
                           }}
+                          color='primary'
                           onClick={() => handleRefresh()}
                         > 
                           Refresh
