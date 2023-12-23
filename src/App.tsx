@@ -27,7 +27,7 @@ function App() {
 
     //--------- UseState area --------------
 
-    const [chartData, setChartData] = useState<object[] | object>([]);
+    const [chartData, setChartData] = useState<object[]>([]);
     
     const [open, setOpen] = useState<boolean>(false);
     const [getCoins, setGetCoins] = useState<object[]>([]);
@@ -305,7 +305,6 @@ function App() {
                           </Suspense>
                       </Grid>
                   </Grid>
-
                   <Grid container spacing={3} sx={{ marginBottom: '20px' }}>
                       <Grid item xl={12} lg={12} md={12} sm={12} xs={12}>
                           <div ref={targetRef}>
