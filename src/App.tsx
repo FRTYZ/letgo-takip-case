@@ -155,16 +155,22 @@ function App() {
     const handleRefresh = async() => {
         const results = await getCoinsFromApi();
 
-        coinData.length > 0 && coinData.map(( item: string ) => {
+          // Card component tip tanımlaması
+          type refreshDataType = {
+              symbol?: string,
+              count?: number
+          }
+
+        coinData.length > 0 && coinData.map(( item: refreshDataType ) => {
               const filteredCurrentCoin = results.find((coin: string) =>
                   coin.symbol.includes(item.symbol)
               );
 
               const newData: {
-                  symbol: string,
+                  symbol: string | undefined,
                   data: object
               } = {
-                  "symbol": item.symbol,
+                  symbol: item.symbol,
                   data: {
                     "weightedAvgPrice": filteredCurrentCoin.weightedAvgPrice,
                     "lastPrice": filteredCurrentCoin.lastPrice
@@ -174,11 +180,11 @@ function App() {
               dispatch(updateCoinData(newData));
 
               const refreshChartData: {
-                  name: string,
+                  name: string | undefined,
                   value: number
               } = {
                   name: item.symbol,
-                  value: Number(item?.count)
+                  value: Number(item.count)
               };
 
               setChartData(refreshChartData);
