@@ -24,14 +24,7 @@ function App() {
 
     const {coinData} = useSelector((state) => state.coinStorage);
 
-    const [chartData, 
-          setChartData] 
-          = useState(
-            [{
-              name: 'default',
-              value:1
-            }]
-          );
+    const [chartData, setChartData] = useState<object[] | object>([]);
     
     const [open, setOpen] = useState<boolean>(false);
     const [getCoins, setGetCoins] = useState<object[]>([]);
@@ -41,22 +34,15 @@ function App() {
     const [searchCoins, setSearchCoins] = useState<object[]>([]);
     const targetRef = useRef<HTMLDivElement>(null);
 
-    /*
-        -Binance'ten güncel api verilerini alır.
-
-        -Kullanıcının reduxta kaydettiği portföylerin sembol ve count isimlerini alır
-        bununla ise counts adındaki state yazar
-    */
+    // güncel coin verileri alan fonksiyonu çalıştırır
     useEffect(() => {
-        const getCoins = async() => {
-            const url = 'https://api2.binance.com/api/v3/ticker/24hr';
-            const response = await fetch(url);
-            const results = await response.json();
+        const getApiData = async() => {
+            const apiData = await getCoinsFromApi();
 
-            setGetCoins(results);
+            setGetCoins(apiData)
         }
 
-        getCoins();
+        getApiData();
     },[])
 
     /*
@@ -71,6 +57,14 @@ function App() {
             }));
 
             setChartData(newData);
+        }
+        else{
+            const defualtChartData: object[] =  [{
+                name: 'default',
+                value: 1
+            }];
+
+            setChartData(defualtChartData);
         }
     },[coinData])
 
@@ -124,6 +118,17 @@ function App() {
     // Modal açılıp / kapanmasını sağlar
     const handleModal = () => setOpen(!open);
 
+
+    //-Binance'ten güncel api verilerini alır.
+    const getCoinsFromApi = async() => {
+        const url = 'https://api2.binance.com/api/v3/ticker/24hr';
+        const response = await fetch(url);
+        const results = await response.json();
+
+        return results;
+    }
+
+
     //  Modal'daki search butonu için anlık olarak yazılan verisini alıp inputValue içinde yazar
     const handleInputChange = (event: ChangeEvent<HTMLInputElement>) => {
         const inputValue = event.target.value;
@@ -145,28 +150,37 @@ function App() {
         ardından sembol ismiyle ve yeni değerleri reduxa gönderip güncelleniyor.
     */
     const handleRefresh = async() => {
-        const url = 'https://api2.binance.com/api/v3/ticker/24hr';
-        const response = await fetch(url);
-        const results = await response.json();
+        const results = await getCoinsFromApi();
 
         coinData.length > 0 && coinData.map(( item: string ) => {
-            const filteredCurrentCoin = results.find((coin: string) =>
-                coin.symbol.includes(item.symbol)
-            );
+              const filteredCurrentCoin = results.find((coin: string) =>
+                  coin.symbol.includes(item.symbol)
+              );
 
-            const newData: {
-                symbol: string,
-                data: object
-            } = {
-                "symbol": item.symbol,
-                data: {
-                  "weightedAvgPrice": filteredCurrentCoin.weightedAvgPrice,
-                  "lastPrice": filteredCurrentCoin.lastPrice
-                }           
-            }
+              const newData: {
+                  symbol: string,
+                  data: object
+              } = {
+                  "symbol": item.symbol,
+                  data: {
+                    "weightedAvgPrice": filteredCurrentCoin.weightedAvgPrice,
+                    "lastPrice": filteredCurrentCoin.lastPrice
+                  }           
+              }
 
-            dispatch(updateCoinData(newData));
+              dispatch(updateCoinData(newData));
+
+              const refreshChartData: {
+                  name: string,
+                  value: number
+              } = {
+                  name: item.symbol,
+                  value: Number(item?.count)
+              };
+
+              setChartData(refreshChartData);
         })
+       
     }
 
     //Chart ayarları
