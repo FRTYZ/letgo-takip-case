@@ -123,7 +123,7 @@ function App() {
     //--------- Function area --------------
 
     // Modal açılıp / kapanmasını sağlar
-    const handleModal = () => setOpen(!open);
+    const handleModal = () => setOpen(open => !open);
 
 
     // Binance'ten güncel api verilerini alır.
