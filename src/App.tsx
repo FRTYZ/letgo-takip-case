@@ -101,6 +101,7 @@ function App() {
                     }  
                         return { ...searchCoin, count: 1, has_in_redux: false };
                     });
+
                     setSearchCoins(updatedSearchCoins);
               }
 
@@ -108,7 +109,6 @@ function App() {
         }
 
     }, [inputValue, targetRef?.current]);
-
 
     // 5dk bir güncelleme sağlıyor
     useEffect(() => {
@@ -123,7 +123,11 @@ function App() {
     //--------- Function area --------------
 
     // Modal açılıp / kapanmasını sağlar
-    const handleModal = () => setOpen(open => !open);
+    const handleModal = () => {
+        setOpen(true);
+        setSearchCoins([])
+    }
+    const handleCloseModal = () => setOpen(false);
 
 
     // Binance'ten güncel api verilerini alır.
@@ -288,7 +292,7 @@ function App() {
               {/* Search Modal */}
               <Modal
                   open={open}
-                  onClose={handleModal}
+                  onClose={handleCloseModal}
                   aria-labelledby="modal-modal-title"
                   aria-describedby="modal-modal-description"
               >

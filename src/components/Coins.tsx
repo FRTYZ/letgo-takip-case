@@ -59,7 +59,6 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                     if (entry.isIntersecting) {
                         setPageNumber((prev) => prev + 1)
                     }
-
                 });
             };
             
@@ -96,7 +95,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
             const startIndex = (pageNumber - 1) * pageSize;
             const endIndex = startIndex + pageSize;
             const limitedData = data.slice(startIndex, endIndex);
-        
+
             if(limitedData.length > 0){
                 setCoinsCardData((prevData) => [ ...prevData, ...limitedData ]);
             }
@@ -135,7 +134,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
 
         getCurrentCoinCounts();
 
-    },[coinData])
+    },[data])
 
     //--------- Function Area --------------
 
