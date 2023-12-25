@@ -298,22 +298,46 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         }
     }
 
-    const cardTypographyForAdd = { 
-        pt:0.8,
+    const cardTypographyBoxForSearch = { 
+        paddingTop:'7.4px',
         paddingBottom: {
             lg: 0, 
             xl: 0, 
             md: 0, 
             xs: 6 
-         }
+        },
+        paddingLeft:'7px',
+        display: 'flex'
     }
 
-    const cardTypographyForUpdateAndRemove = {
-         pt: 1 
+    const cardCoinSymbolForSearch = {
+        fontSize: '15px',
+        paddingRight: '4px'
     }
 
-    const cardBoxSearch = {
-        marginTop: searchCoin ? '4px' : '20px'
+    const cardCoinValuesForSearch = {
+        fontSize: '13px',
+        paddingTop: '1.4px',
+        color: '#00000099'
+    }
+
+    const cardTypographyBoxForPortfoy = {
+        paddingLeft:'6px',
+        paddingTop: '2px'
+    }
+    
+    const cardCoinSymbolForPortfoy = {
+        fontSize: '15px'
+    }
+
+    const cardCoinValuesForPortfoy = {
+         pt: 0,
+         fontSize: '12px',
+         color: '#00000099'
+    }
+
+    const cardBoxCount = {
+        marginTop: searchCoin ? '4px' : '9px'
     }
 
     const cardAddButton = {
@@ -327,8 +351,9 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
     }
     
     const cardBoxButton = { 
+        display:'flex',
         float: 'right',
-        marginTop: searchCoin ? '0' : '12px'
+        marginTop: searchCoin ? '0' : '4px'
     }
 
     const cardUpdateAndRemoveButton = {
@@ -359,17 +384,18 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                             <Grid item xl={6} lg={6} md={6} sm={12} xs={12}>
                                  {/* Coin bilgi alanı */}
                                 {searchCoin ? (
-                                    <Box>
-                                        <Typography sx={cardTypographyForAdd} color="text.secondary">
-                                                {item.symbol}  - {item.lastPrice}
+                                    <Box sx={cardTypographyBoxForSearch}>
+                                        <Typography sx={cardCoinSymbolForSearch}>{item.symbol}</Typography> 
+                                        <Typography sx={cardCoinValuesForSearch}>
+                                              - {item.lastPrice}
                                         </Typography>
                                     </Box>
                                 ): (
-                                    <Box>
-                                        <Typography variant="h6" component="div">
+                                    <Box sx={cardTypographyBoxForPortfoy}>
+                                        <Typography sx={cardCoinSymbolForPortfoy}>
                                                 {item.symbol}
                                         </Typography>
-                                        <Typography sx={cardTypographyForUpdateAndRemove} color="text.secondary">
+                                        <Typography sx={cardCoinValuesForPortfoy}>
                                                 {item.lastPrice}  - {item.weightedAvgPrice}
                                         </Typography>
                                     </Box>
@@ -379,7 +405,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
                                 <Grid container>
                                     {/* Coin adet belirleme alanı */}
                                     <Grid item xl={6} lg={6} md={6} sm={2} xs={2}>
-                                        <Box sx={cardBoxSearch}>
+                                        <Box sx={cardBoxCount}>
                                             <TextField
                                                 id="outlined-number"
                                                 type="number"

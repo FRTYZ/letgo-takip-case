@@ -236,6 +236,7 @@ function App() {
      //--------- Material UI area --------------
 
     const boxInHome = { 
+        display: 'flex',
         marginTop: '50px',
         marginBottom: '80px',
         textAlign: { lg: 'left' ,md: 'left' ,sm: 'center', xs: 'center' }
