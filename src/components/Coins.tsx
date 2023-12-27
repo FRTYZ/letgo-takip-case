@@ -20,6 +20,15 @@ interface CoinsAreaProps {
     targetRef: React.RefObject<HTMLDivElement>;
 }
 
+// Card component tip tanımlaması
+type coinsCardType = {
+    symbol?: string,
+    lastPrice?: number,
+    weightedAvgPrice?: number,
+    has_in_redux?: boolean,
+    count?:number
+}
+
 const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
     const dispatch = useDispatch();
     const {coinData} = useSelector((state) => state.coinStorage);
@@ -361,14 +370,7 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
         padding: '8px 15px 8px 15px'
     }
 
-    // Card component tip tanımlaması
-    type coinsCardType = {
-        symbol?: string,
-        lastPrice?: number,
-        weightedAvgPrice?: number,
-        has_in_redux?: boolean,
-        count?:number
-    }
+    
     
   return (
     <>
