@@ -1,7 +1,17 @@
-import { AnyAction, configureStore, createSlice } from '@reduxjs/toolkit';
+import { AnyAction, PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
+
+interface Coin {
+  symbol: string;
+  askPrice: string;
+  askQty: string;
+  bidPrice: string;
+  bidQty:string;
+  closeTime: number;
+  
+}
 
 interface selectedCoinState {
-    coinData: object[]; // Coin verilerini tutan diziyi tanımla
+    coinData: Coin[]; // Coin verilerini tutan diziyi tanımla
 }
 
 // coinSlice oluşturulması ve reducer tanımlanması
