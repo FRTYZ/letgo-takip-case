@@ -13,8 +13,7 @@ import {
 
 import { PieChart, Pie, Cell, Tooltip } from "recharts";
 
-import { updateCoinData } from './redux/store';
-import { useSelector, useDispatch } from "react-redux";
+import { updateCoinData,useAppSelector, useAppDispatch  } from './redux/store';
 
 import CoinsLoader from './components/CoinsLoader';
 const Coins = lazy(() => import('./components/Coins'));
@@ -22,8 +21,8 @@ const Coins = lazy(() => import('./components/Coins'));
 function App() {
 
     //--------- Redux area --------------
-    const dispatch = useDispatch();
-    const {coinData} = useSelector((state) => state.coinStorage);
+    const dispatch = useAppDispatch();
+    const {coinData} = useAppSelector((state) => state?.coinStorage);
 
     //--------- UseState area --------------
 

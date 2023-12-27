@@ -11,8 +11,8 @@ import {
   } 
   from '@mui/material';
 
-import { setCoinData, removeCoinBySymbol, updateCoinData } from '../redux/store';
-import { useSelector, useDispatch } from "react-redux";
+import { setCoinData, removeCoinBySymbol, updateCoinData, useAppSelector, useAppDispatch } from '../redux/store';
+
 
 interface CoinsAreaProps {
     data: object[],
@@ -30,8 +30,8 @@ type coinsCardType = {
 }
 
 const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
-    const dispatch = useDispatch();
-    const {coinData} = useSelector((state) => state.coinStorage);
+    const dispatch = useAppDispatch();
+    const {coinData} = useAppSelector((state) => state?.coinStorage);
 
     //--------- UseState Area --------------
 
