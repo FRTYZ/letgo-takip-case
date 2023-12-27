@@ -124,16 +124,20 @@ const Coins: React.FC<CoinsAreaProps> = ({ data, searchCoin, targetRef }) => {
     useEffect(() => {
         const getCurrentCoinCounts = () => {
             if(coinData.length > 0) {
-                const coinResultFromRedux = coinData.forEach(item => {
-                    return {symbol: item.symbol, count: item.count};
-                });
+                const result = {};
+
+                coinData.forEach(item => {
+                    const { symbol, count } = item;
+                    result[symbol] = count
+                })
 
                 /* kullanıcı önceden count değiştirdiği coin varsa onlarla beraber
                     reduxtaki count verilerle günceller
                 */
                 setCounts(prevCounts => ({
-                    ...prevCounts, coinResultFromRedux
+                    ...prevCounts, ...result
                 }))
+
             }
         }
 
