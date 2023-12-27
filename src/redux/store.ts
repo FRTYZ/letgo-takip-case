@@ -1,23 +1,11 @@
-import { AnyAction, PayloadAction, configureStore, createSlice } from '@reduxjs/toolkit';
-
-interface Coin {
-  symbol: string;
-  askPrice: string;
-  askQty: string;
-  bidPrice: string;
-  bidQty:string;
-  closeTime: number;
-  
-}
-
-interface selectedCoinState {
-    coinData: Coin[]; // Coin verilerini tutan diziyi tanımla
-}
+import { PayloadAction, configureStore, createSlice, Middleware } from '@reduxjs/toolkit';
+import { useDispatch, useSelector, TypedUseSelectorHook } from 'react-redux'
+import { SelectedCoinState } from './interface'
 
 // coinSlice oluşturulması ve reducer tanımlanması
 const coinSlice = createSlice({
   name: 'coinStorage',
-  initialState: { coinData: [] } as selectedCoinState, // initialState'ı dizi olarak tanımla
+  initialState: { coinData: [] } as SelectedCoinState, // initialState'ı dizi olarak tanımla
   reducers: {
     setCoinData: (state, action) => {
         const existingIndex = state.coinData.findIndex((item) => item.symbol === action.payload.symbol);
@@ -34,7 +22,7 @@ const coinSlice = createSlice({
         // Belirtilen sembol ismine sahip objeyi filtreleyerek yeni bir dizi oluştur
         state.coinData = state.coinData.filter((item) => item.symbol !== action.payload);
     },
-    updateCoinData: (state, action: PayloadAction<{ symbol: string; data: any }>) => {
+    updateCoinData: (state, action: PayloadAction<{ symbol: string; data: object }>) => {
         const { symbol, data } = action.payload;
         const existingItem = state.coinData.find((item) => item.symbol === symbol);
   
@@ -53,8 +41,9 @@ const rootReducer = {
     coinStorage: coinSlice.reducer,
 };
 
+
 // Özel bir middleware oluştur
-const saveToLocalStorageMiddleware = (store) => (next) => (action: AnyAction) => {
+const saveToLocalStorageMiddleware: Middleware = (store) => (next) => (action) => {
     const result = next(action);
     // Redux store verilerini Local Storage'a kaydetme
     localStorage.setItem('coinStorage', JSON.stringify(store.getState().coinStorage));
@@ -64,14 +53,18 @@ const saveToLocalStorageMiddleware = (store) => (next) => (action: AnyAction) =>
 const store = configureStore({
     reducer: rootReducer,
     preloadedState: {
-        coinStorage: JSON.parse(localStorage.getItem('coinStorage') || '{"coinData": []}')
+      coinStorage: JSON.parse(localStorage.getItem('coinStorage') || '{"coinData": []}'),
     },
     middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(saveToLocalStorageMiddleware),
+      getDefaultMiddleware().concat(saveToLocalStorageMiddleware),
 });
-
 export function removeAllData(){
     localStorage.clear();
 }
 
 export default store;
+
+export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
